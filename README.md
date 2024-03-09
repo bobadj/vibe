@@ -8,7 +8,7 @@
 
 * clone repository
 ```bash
-git clone git@github.com:bobadj/vibe.git 
+git clone git@github.com:bobadj/vibe.git
 ```
 * install dependencies with `pnpm`
 ```bash
