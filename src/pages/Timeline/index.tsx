@@ -3,7 +3,6 @@ import {PostForm, Search} from "../../components";
 import Post from "../../components/Post";
 
 export default function Timeline(): JSX.Element {
-  
   return (
     <div className="flex flex-col gap-12 px-2">
       <Search />
