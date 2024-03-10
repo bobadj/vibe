@@ -1,5 +1,5 @@
-import {JSX} from "react";
-import {PostForm, Search} from "../../components";
+import { JSX } from "react";
+import { PostForm, Search } from "../../components";
 import Post from "../../components/Post";
 
 export default function Timeline(): JSX.Element {

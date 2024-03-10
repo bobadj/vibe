@@ -13,6 +13,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.25.0",
     "@typechain/ethers-v6": "^0.5.1",
+    "@wagmi/core": "^2.6.5",
     "ethers": "^6.11.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

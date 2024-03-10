@@ -1,5 +1,5 @@
-import {ChangeEvent, JSX, useMemo} from "react";
-import {debounce} from "../../utils";
+import { ChangeEvent, JSX, useMemo } from "react";
+import { debounce } from "../../utils";
 import searchIcon from "./search.svg";
 
 interface SearchProps {

@@ -1,5 +1,5 @@
-import {FormEvent, JSX, useState} from "react";
-import {Card, Button, Avatar, Textarea} from "./../../components";
+import { FormEvent, JSX, useState } from "react";
+import { Card, Button, Avatar, Textarea } from "./../../components";
 
 interface PostFormProps {
   title?: string,

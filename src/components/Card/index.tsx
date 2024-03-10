@@ -1,4 +1,4 @@
-import {JSX} from "react";
+import { JSX } from "react";
 
 interface CardProps {
   children: JSX.Element|JSX.Element[],

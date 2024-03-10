@@ -1,6 +1,6 @@
-import {JSX} from "react";
-import {Outlet} from "react-router-dom";
-import {Card, Button} from "../../components";
+import { JSX } from "react";
+import { Outlet } from "react-router-dom";
+import { Card, Button } from "../../components";
 import logoIndigo from './../../assets/logo_indigo.svg';
 
 export default function PageLayout(): JSX.Element {

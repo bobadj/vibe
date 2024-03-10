@@ -1,5 +1,5 @@
-import {JSX} from "react";
-import {Avatar, Card} from "../../components";
+import { JSX } from "react";
+import { Avatar, Card } from "../../components";
 import coins from "./assets/coins.svg";
 import share from "./assets/share.svg";
 

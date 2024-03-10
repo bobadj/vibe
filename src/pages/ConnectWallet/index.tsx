@@ -1,8 +1,8 @@
-import {JSX} from "react";
+import { JSX } from "react";
+import { Button } from "../../components";
+import { supportedWallets, wagmiConfig } from "../../utils";
+import { connect } from '@wagmi/core';
 import logo from './../../assets/logo_white.svg';
-import {Button} from "../../components";
-import metamask from "./assets/metamask.svg";
-import walletconnect from "./assets/walletconnect.svg";
 
 export default function ConnectWallet(): JSX.Element {
   return (
@@ -15,18 +15,30 @@ export default function ConnectWallet(): JSX.Element {
           <h2 className="text-black font-bold text-6xl mb-2">Connect your wallet</h2>
           <p className="font-normal text-black">Need help connecting a wallet? <a href="#">Read our FAQ</a></p>
           <div className="flex flex-col pt-12 gap-3 max-w-[350px]">
-            <Button className="gap-4 !w-full" classType="transparent">
-              <>
-                <img src={metamask} alt="Metamask" />
-                <span className="text-black">MetaMask</span>
-              </>
-            </Button>
-            <Button className="gap-4 !w-full" classType="transparent">
-              <>
-                <img src={walletconnect} alt="WalletConnect" />
-                <span className="text-black">WalletConnect</span>
-              </>
-            </Button>
+            {
+              supportedWallets.map( (connector: any, i: number) => (
+                <Button key={i} className="gap-4 !w-full"
+                        classType="transparent"
+                        onClick={() => connect(wagmiConfig, { connector: connector })}>
+                  <>
+                    <img src={'/src/assets/wallets/metamask.svg'} alt="Metamask" />
+                    <span className="text-black">{connector()?.name}</span>
+                  </>
+                </Button>
+              ))
+            }
+            {/*<Button className="gap-4 !w-full" classType="transparent" onClick={() => console.log('asdasd')}>*/}
+            {/*  <>*/}
+            {/*    <img src={metamask} alt="Metamask" />*/}
+            {/*    <span className="text-black">MetaMask</span>*/}
+            {/*  </>*/}
+            {/*</Button>*/}
+            {/*<Button className="gap-4 !w-full" classType="transparent">*/}
+            {/*  <>*/}
+            {/*    <img src={walletconnect} alt="WalletConnect" />*/}
+            {/*    <span className="text-black">WalletConnect</span>*/}
+            {/*  </>*/}
+            {/*</Button>*/}
           </div>
         </div>
       </div>
