@@ -8,6 +8,9 @@
   }
 }
 @layer components {
+  a {
+    @apply text-blue-500 underline;
+  }
   .btn-primary {
     @apply bg-blue shadow-buttonPrimary text-white;
   }
