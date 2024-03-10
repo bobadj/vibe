@@ -7,10 +7,8 @@ interface CardProps {
 
 export default function Card({ children, className }: CardProps): JSX.Element {
   return (
-    <div className={`card rounded-[25px] px-3 py-5 border-solid border-[16px] ${className}`}>
-      <div className="card-content">
-        {children}
-      </div>
+    <div className={`bg-card shadow-sm rounded-[25px] px-3 py-5 border-solid border-[16px] border-gray ${className}`}>
+      {children}
     </div>
   )
 }

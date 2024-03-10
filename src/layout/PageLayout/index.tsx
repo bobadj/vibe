@@ -13,7 +13,7 @@ export default function PageLayout(): JSX.Element {
             <Button className="mt-[150px]">Write A Post</Button>
           </Card>
         </div>
-        <Card className="container h-full">
+        <Card className="container min-h-full h-fit">
           <Outlet />
         </Card>
         <div className="sidebar">
