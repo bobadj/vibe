@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ConnectWallet, Timeline } from "../pages";
-import PageLayout from "../layout/PageLayout";
 import { createConfig, http } from "wagmi";
-import { sepolia } from "viem/chains";
-import { injected } from 'wagmi/connectors'
+import { Chain, sepolia } from "viem/chains";
+import { injected, walletConnect } from 'wagmi/connectors'
+import PageLayout from "../layout/PageLayout";
 
 export const TIMELINE_PATH: string = '/';
 export const CONNECT_WALLET_PATH: string = '/wallet';
@@ -40,13 +40,21 @@ export const debounce = (callback: CallbackFunction, wait: number = 300) => {
 
 export const supportedWallets = [
   injected({ target: 'metaMask' }),
-]
+  walletConnect({ projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID })
+];
+
+export const supportedChains: [Chain, ...Chain[]] = [ sepolia ];
 
 export const wagmiConfig = createConfig({
-  chains: [sepolia],
+  chains: supportedChains,
   connectors: supportedWallets,
   transports: {
-    [sepolia.id]: http('https://sepolia.infura.io/v3/'+import.meta.env.VITE_INFURA_API_KEY),
+    [sepolia.id]: http('https://eth-sepolia.g.alchemy.com/v2/'+import.meta.env.VITE_ALCHEMY_API_KEY),
   },
 });
+
+export const formatAddress = (account: string|null|undefined) => {
+  const acc = account || '';
+  return acc.substring(0, 6) + '...' + acc.substring(acc.length - 4)
+};
 

@@ -1,10 +1,19 @@
-import { JSX } from "react";
+import { JSX, useEffect } from "react";
 import { Button } from "../../components";
-import { supportedWallets, wagmiConfig } from "../../utils";
+import { supportedWallets, TIMELINE_PATH, wagmiConfig } from "../../utils";
 import { connect } from '@wagmi/core';
+import { useAccount } from "wagmi";
+import { useNavigate } from "react-router-dom";
 import logo from './../../assets/logo_white.svg';
 
 export default function ConnectWallet(): JSX.Element {
+  const { address, chainId} = useAccount();
+  const navigate = useNavigate();
+  
+  useEffect( () => {
+    if (address || chainId) navigate(TIMELINE_PATH);
+  }, [address, chainId]);
+  
   return (
     <div className="container-lg bg-layout">
       <div className="flex flex-row justify-between min-h-[100vh]">
@@ -16,29 +25,21 @@ export default function ConnectWallet(): JSX.Element {
           <p className="font-normal text-black">Need help connecting a wallet? <a href="#">Read our FAQ</a></p>
           <div className="flex flex-col pt-12 gap-3 max-w-[350px]">
             {
-              supportedWallets.map( (connector: any, i: number) => (
-                <Button key={i} className="gap-4 !w-full"
-                        classType="transparent"
-                        onClick={() => connect(wagmiConfig, { connector: connector })}>
-                  <>
-                    <img src={'/src/assets/wallets/metamask.svg'} alt="Metamask" />
-                    <span className="text-black">{connector()?.name}</span>
-                  </>
-                </Button>
-              ))
+              supportedWallets.map( (connector: any, i: number) => {
+                const wallet = connector();
+                return (
+                  <Button key={i}
+                          className="gap-4 !w-full"
+                          classType="transparent"
+                          onClick={() => connect(wagmiConfig, { connector: connector })}>
+                    <>
+                      <img src={`/src/assets/wallets/${wallet?.name.toLowerCase()}.svg`} alt={wallet.name} />
+                      <span className="text-black">{wallet?.name}</span>
+                    </>
+                  </Button>
+                )
+              })
             }
-            {/*<Button className="gap-4 !w-full" classType="transparent" onClick={() => console.log('asdasd')}>*/}
-            {/*  <>*/}
-            {/*    <img src={metamask} alt="Metamask" />*/}
-            {/*    <span className="text-black">MetaMask</span>*/}
-            {/*  </>*/}
-            {/*</Button>*/}
-            {/*<Button className="gap-4 !w-full" classType="transparent">*/}
-            {/*  <>*/}
-            {/*    <img src={walletconnect} alt="WalletConnect" />*/}
-            {/*    <span className="text-black">WalletConnect</span>*/}
-            {/*  </>*/}
-            {/*</Button>*/}
           </div>
         </div>
       </div>
