@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Card, Button, NetworkError } from "../../components";
-import { useAccount } from "wagmi";
+import { useAccount, useEnsName } from "wagmi";
 import { formatAddress } from "../../utils";
 import { CONNECT_WALLET_PATH } from "../../utils/router";
 import { useIsCurrentChainSupported } from "../../hook";
@@ -11,6 +11,10 @@ export default function PageLayout(): JSX.Element {
   const navigate = useNavigate();
   const { isConnected, address } = useAccount();
   const isChainSupported = useIsCurrentChainSupported();
+  
+  const { data } = useEnsName({
+    address: address
+  });
   
   return (
     <div className="container-lg h-screen p-6 bg-layout">
@@ -27,7 +31,7 @@ export default function PageLayout(): JSX.Element {
         <div className="sidebar">
           <Card>
             <Button classType="secondary" disabled={isConnected} onClick={() => navigate(CONNECT_WALLET_PATH)}>
-              {address ? formatAddress(address) : 'Connect wallet'}
+              {(data || address) ? data || formatAddress(address) : 'Connect wallet'}
             </Button>
           </Card>
         </div>
