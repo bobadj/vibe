@@ -3,10 +3,11 @@ import { Card, Button, Avatar, Textarea } from "./../../components";
 
 interface PostFormProps {
   title?: string,
-  onSubmit?: (postContent: string) => void
+  onSubmit?: (postContent: string) => void,
+  disabled?: boolean
 }
 
-export default function PostForm({ title, onSubmit }: PostFormProps): JSX.Element {
+export default function PostForm({ title, onSubmit, disabled }: PostFormProps): JSX.Element {
   const [ postContent, setPostContent ] = useState<string|null>(null);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -22,10 +23,11 @@ export default function PostForm({ title, onSubmit }: PostFormProps): JSX.Elemen
         <div className="flex flex-row gap-4 mb-6">
           <Avatar small />
           <Textarea onChange={setPostContent}
+                    disabled={disabled}
                     placeholder="How’s your Vibe today, 3327?" />
         </div>
         <div className="w-full flex justify-end">
-          <Button type="submit">POST</Button>
+          <Button type="submit" disabled={disabled}>POST</Button>
         </div>
       </Card>
     </form>

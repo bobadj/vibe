@@ -16,3 +16,11 @@ export const wagmiConfig = createConfig({
     [sepolia.id]: http('https://eth-sepolia.g.alchemy.com/v2/'+import.meta.env.VITE_ALCHEMY_API_KEY),
   },
 });
+
+export type AddressMap = {
+  [chainId: number]: string
+}
+
+export const contractAddresses: AddressMap = {
+  [sepolia.id]: '0x53Ca39179b1E0fC4C921331225EcE62b2973cE7b'
+}

@@ -1,6 +1,6 @@
 import { JSX, useEffect } from "react";
 import { Button } from "../../components";
-import { supportedWallets, wagmiConfig } from "../../utils/confit";
+import { supportedWallets, wagmiConfig } from "../../utils/config";
 import { TIMELINE_PATH } from "../../utils/router";
 import { connect } from '@wagmi/core';
 import { useAccount } from "wagmi";

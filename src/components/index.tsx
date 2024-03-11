@@ -4,6 +4,7 @@ import Search from "./Search";
 import PostForm from "./PostForm";
 import Avatar from "./Avatar";
 import Textarea from "./Textarea";
+import Post from "./Post";
 import NetworkError from "./NetworkError";
 
 export {
@@ -13,5 +14,6 @@ export {
   PostForm,
   Avatar,
   Textarea,
+  Post,
   NetworkError
 }
