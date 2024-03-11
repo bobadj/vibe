@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Chain } from "viem/chains";
 import { useAccount, useChainId } from "wagmi";
-import { supportedChains } from "../utils";
+import { supportedChains } from "../utils/confit";
 
 export default function useIsCurrentChainSupported(): boolean|undefined {
   const defaultChainId: number = useChainId();

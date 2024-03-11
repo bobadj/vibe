@@ -2,7 +2,8 @@ import { JSX } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Card, Button, NetworkError } from "../../components";
 import { useAccount, useEnsName } from "wagmi";
-import { CONNECT_WALLET_PATH, formatAddress } from "../../utils";
+import { formatAddress } from "../../utils";
+import { CONNECT_WALLET_PATH } from "../../utils/router";
 import { useIsCurrentChainSupported } from "../../hook";
 import logoIndigo from './../../assets/logo_indigo.svg';
 
