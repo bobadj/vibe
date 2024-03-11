@@ -28,7 +28,8 @@ export default {
         },
         red: {
           DEFAULT: '#C73333'
-        }
+        },
+        muted: '#38414D'
       },
       boxShadow: {
         buttonPrimary: '0px 20px 50px 0px #3672E969',

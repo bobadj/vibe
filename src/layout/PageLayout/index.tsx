@@ -1,13 +1,15 @@
 import { JSX } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Card, Button } from "../../components";
+import { Card, Button, NetworkError } from "../../components";
 import { useAccount, useEnsName } from "wagmi";
 import { CONNECT_WALLET_PATH, formatAddress } from "../../utils";
+import { useIsCurrentChainSupported } from "../../hook";
 import logoIndigo from './../../assets/logo_indigo.svg';
 
 export default function PageLayout(): JSX.Element {
   const navigate = useNavigate();
-  const { address } = useAccount();
+  const { isConnected, address } = useAccount();
+  const isChainSupported = useIsCurrentChainSupported();
   
   const { data } = useEnsName({
     address: address
@@ -19,15 +21,15 @@ export default function PageLayout(): JSX.Element {
         <div className="sidebar">
           <Card>
             <img src={logoIndigo} alt="" className="w-[50px] h-auto" />
-            <Button className="mt-[150px]" disabled={!address}>Write A Post</Button>
+            <Button className="mt-[150px]" disabled={!isConnected || !isChainSupported}>Write A Post</Button>
           </Card>
         </div>
-        <Card className="container min-h-full h-fit">
-          <Outlet />
+        <Card className="container h-fit">
+          {isChainSupported ? <Outlet /> : <NetworkError />}
         </Card>
         <div className="sidebar">
           <Card>
-            <Button classType="secondary" disabled={!!address} onClick={() => navigate(CONNECT_WALLET_PATH)}>
+            <Button classType="secondary" disabled={isConnected} onClick={() => navigate(CONNECT_WALLET_PATH)}>
               {(data || address) ? data || formatAddress(address) : 'Connect wallet'}
             </Button>
           </Card>

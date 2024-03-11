@@ -4,6 +4,7 @@ import Search from "./Search";
 import PostForm from "./PostForm";
 import Avatar from "./Avatar";
 import Textarea from "./Textarea";
+import NetworkError from "./NetworkError";
 
 export {
   Card,
@@ -11,5 +12,6 @@ export {
   Search,
   PostForm,
   Avatar,
-  Textarea
+  Textarea,
+  NetworkError
 }
