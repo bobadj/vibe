@@ -20,7 +20,7 @@ export default function Post({ post }: PostProps): JSX.Element {
       <Avatar />
       <div className="flex flex-col gap-3">
         <div className="flex flex-row gap-2 items-center font-bold text-black">
-          <p className="text-black">{ensName || post?.owner}</p>
+          <p className="text-black w-auto truncate">{ensName || post?.owner}</p>
           ·
           <small>{formatTime(BigNumber.from(post?.timestamp).toNumber())}</small>
         </div>

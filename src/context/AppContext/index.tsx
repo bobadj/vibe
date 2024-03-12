@@ -1,8 +1,8 @@
 import { BigNumber } from "ethers";
+import { ZERO_ADDRESS } from '../../utils';
 import { useVibeContract } from "../../hook";
 import { VibeAbi } from "../../../abis/types";
 import { useAccount, useChainId } from "wagmi";
-import { ZERO_ADDRESS } from './../../utils';
 import { ISocialNetwork } from "../../../abis/types/VibeAbi.ts";
 import { Context, createContext, JSX, useEffect, useState } from "react";
 
@@ -26,8 +26,8 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
   
   useEffect(() => {
-    fetchPosts()
-  }, [contract]);
+    fetchPosts();
+  }, []);
   
   const fetchLastPostId = async (): Promise<number> => {
     let lastPostId = 0;
@@ -38,23 +38,26 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     return lastPostId;
   };
   
-  const fetchPosts = async () => {
-    setIsLoading(true);
+  const fetchPosts = async (cleanup: boolean = true) => {
     if (contract) {
-      const lastPostId: number = await fetchLastPostId();
+      const latestPostId: number = await fetchLastPostId();
       const loadLimit = 5;
-      
-      const fetchedPosts = await contract.fetchPostsRanged(lastPostId - loadLimit, loadLimit);
-      setPosts(
-        Array.from(fetchedPosts)
-          // reverse order
-          .reverse()
-          // check for deleted posts
-          .filter( (post) => post?.owner !== ZERO_ADDRESS )
-      );
+      let loadStartAt = (latestPostId - (cleanup ? 0 : posts.length)) - loadLimit;
+      if (loadStartAt < 0) loadStartAt = 0;
+
+      if (posts.length < +latestPostId) {
+        setIsLoading(true);
+        let fetchedPosts = await contract.fetchPostsRanged(loadStartAt, loadLimit);
+        fetchedPosts = Array.from(fetchedPosts)
+          .reverse() // reverse order
+          .filter( (post) => post?.owner !== ZERO_ADDRESS ); // check for deleted posts
+        setPosts((prevState) =>
+          cleanup ? fetchedPosts : [...prevState, ...fetchedPosts]
+        );
+        // lets delay loading a bit
+        setTimeout(() => setIsLoading(false), 50);
+      }
     }
-    // lets delay loading a bit
-    setTimeout(() => setIsLoading(false), 50);
   }
   
   return (

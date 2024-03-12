@@ -1,7 +1,7 @@
 import type { Chain, Client, Transport } from "viem";
 import { providers } from "ethers";
 
-export type CallbackFunction = (...args: never[]) => void;
+export type CallbackFunction = (...args: any) => any;
 
 export const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000';
 
@@ -30,7 +30,7 @@ export function clientToProvider(client: Client<Transport, Chain>): providers.Js
   return new providers.JsonRpcProvider(transport.url, network);
 }
 
-export const formatTime = (timestamp: number, useFullFormat: boolean = false) => {
+export const formatTime = (timestamp: number, useFullFormat: boolean = true) => {
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const date = new Date((timestamp * 1000)) as any;
   const seconds = Math.floor((new Date() as any - date) / 1000);
