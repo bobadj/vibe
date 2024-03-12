@@ -18,7 +18,7 @@ export default function ConnectWallet(): JSX.Element {
   return (
     <div className="container-lg bg-layout">
       <div className="flex flex-row justify-between min-h-[100vh]">
-        <div className="hidden lg:flex justify-center bg-login bg-no-repeat w-full bg-center">
+        <div className="hidden lg:flex justify-center bg-login bg-no-repeat w-full bg-center bg-cover">
           <img src={logo} alt="Vibe" className="max-w-[180px]" />
         </div>
         <div className="w-full flex flex-col justify-center px-6">
