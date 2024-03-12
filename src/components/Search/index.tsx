@@ -19,7 +19,7 @@ export default function Search({ placeholder = 'Search...', onSearch }: SearchPr
              onChange={handleSearch}
              type="text"
              placeholder={placeholder} />
-      <img src={searchIcon} alt="search" />
+      <img src={searchIcon} alt="search" className="max-w-[20px]" />
     </div>
   )
 }
