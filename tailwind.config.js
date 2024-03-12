@@ -11,7 +11,7 @@ export default {
       backgroundImage: {
         layout: 'radial-gradient(circle at left top, #F8CEEC 20%, #E6EDF2 40%, transparent),\n' +
             'radial-gradient(circle at right top,#C3ADF6 30%, #E6EDF2 40%, transparent)',
-        login: "url('/src/assets/login-bg.png')"
+        login: "url('/src/assets/login-bg.png')",
         // card: 'rgba(255, 255, 255, 0.6)'
         // 'card': 'radial-gradient(100% 249.45% at 0% 2.78%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 100%)',
       },

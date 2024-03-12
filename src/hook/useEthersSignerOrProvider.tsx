@@ -5,7 +5,7 @@ import { providers, Signer } from "ethers";
 
 /** Hook to convert a viem Client to an ethers.js Provider. */
 /** source: https://wagmi.sh/react/guides/ethers */
-export function useEthersSignerOrProvider(chainId: number | undefined): providers.JsonRpcProvider|Signer|null {
+export default function useEthersSignerOrProvider(chainId: number | undefined): providers.JsonRpcProvider|Signer|null {
   const { address, isConnected } = useAccount();
   const client = useClient<Config>({ chainId });
 

@@ -1,20 +1,31 @@
 import { JSX } from "react";
+import { BigNumber } from "ethers";
+import { useEnsName } from "wagmi";
+import { formatTime } from "../../utils";
 import { Avatar, Card } from "../../components";
+import { ISocialNetwork } from "../../../abis/types/VibeAbi.ts";
+
 import coins from "./assets/coins.svg";
 import share from "./assets/share.svg";
 
-export default function Post(): JSX.Element {
+interface PostProps {
+  post: ISocialNetwork.PostStruct
+}
+
+export default function Post({ post }: PostProps): JSX.Element {
+  const { data: ensName } = useEnsName({ address: post?.owner as any });
+  
   return (
-    <Card className="border-[2px] rounded-[1rem] flex flex-row gap-3">
+    <Card className="border-[2px] rounded-[1rem] flex flex-row gap-3 w-auto">
       <Avatar />
       <div className="flex flex-col gap-3">
         <div className="flex flex-row gap-2 items-center font-bold text-black">
-          <p className="text-black">0x03e75d7dd38cce2e20ffee35ec914c57780a8e29</p>
+          <p className="text-black">{ensName || post?.owner}</p>
           ·
-          <small>23s</small>
+          <small>{formatTime(BigNumber.from(post?.timestamp).toNumber())}</small>
         </div>
         <div className="post-content text-black">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Neque orci praesent facilisi risus etiam imperdiet fermentum. Sit neque, purus scelerisque sit eget risus ullamcorper suspendisse neque.</p>
+          <p>{post?.text}</p>
         </div>
         <div className="post-actions flex flex-row gap-6 items-center">
           <span className="flex flex-row items-center gap-2 cursor-pointer text-red text-xs">

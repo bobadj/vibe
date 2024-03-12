@@ -6,6 +6,7 @@ import Avatar from "./Avatar";
 import Textarea from "./Textarea";
 import Post from "./Post";
 import NetworkError from "./NetworkError";
+import Loading from "./Loading";
 
 export {
   Card,
@@ -15,5 +16,6 @@ export {
   Avatar,
   Textarea,
   Post,
-  NetworkError
+  NetworkError,
+  Loading
 }

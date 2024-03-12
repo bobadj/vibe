@@ -1,11 +1,17 @@
-import { Context, createContext, JSX, useEffect } from "react";
-import { useAccount, useChainId } from "wagmi";
+import { BigNumber } from "ethers";
 import { useVibeContract } from "../../hook";
 import { VibeAbi } from "../../../abis/types";
+import { useAccount, useChainId } from "wagmi";
+import { ZERO_ADDRESS } from './../../utils';
+import { ISocialNetwork } from "../../../abis/types/VibeAbi.ts";
+import { Context, createContext, JSX, useEffect, useState } from "react";
 
-interface AppContextValue {}
+interface AppContextValue {
+  posts: ISocialNetwork.PostStruct[],
+  isLoading: boolean
+}
 
-const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
+export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
 
 interface AppProviderProps {
   children: JSX.Element|JSX.Element[]
@@ -16,21 +22,43 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   const { chainId } = useAccount();
   const contract: VibeAbi|null = useVibeContract(chainId || defaultChainId);
   
-  const fetchLastPostId = async () => {
-    if (contract) {
-      const t = await contract.getLatestPostID()
-      // const t = await contract.getLatestPostID();
-      console.log(t)
-    }
-  }
-
+  const [ posts, setPosts ] = useState<ISocialNetwork.PostStruct[]>([]);
+  const [ isLoading, setIsLoading ] = useState<boolean>(false);
+  
   useEffect(() => {
-    // console.log('ALO')
-    fetchLastPostId();
-  }, []);
+    fetchPosts()
+  }, [contract]);
+  
+  const fetchLastPostId = async (): Promise<number> => {
+    let lastPostId = 0;
+    if (contract) {
+      const fetchedLastPostId: BigNumber = await contract.getLatestPostID();
+      lastPostId = fetchedLastPostId.toNumber();
+    }
+    return lastPostId;
+  };
+  
+  const fetchPosts = async () => {
+    setIsLoading(true);
+    if (contract) {
+      const lastPostId: number = await fetchLastPostId();
+      const loadLimit = 5;
+      
+      const fetchedPosts = await contract.fetchPostsRanged(lastPostId - loadLimit, loadLimit);
+      setPosts(
+        Array.from(fetchedPosts)
+          // reverse order
+          .reverse()
+          // check for deleted posts
+          .filter( (post) => post?.owner !== ZERO_ADDRESS )
+      );
+    }
+    // lets delay loading a bit
+    setTimeout(() => setIsLoading(false), 50);
+  }
   
   return (
-    <AppContext.Provider value={{}}>
+    <AppContext.Provider value={{ posts, isLoading }}>
       {children}
     </AppContext.Provider>
   )

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { contractAddresses } from "../utils/config";
-import { useEthersSignerOrProvider } from "./useEthersSignerOrProvider";
 import { VibeAbi, VibeAbi__factory } from "../../abis/types";
+import useEthersSignerOrProvider from "./useEthersSignerOrProvider";
 
 export default function useVibeContract(chainId: number): VibeAbi|null {
   const signerOrProvider = useEthersSignerOrProvider(chainId);
