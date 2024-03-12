@@ -1,7 +1,7 @@
-import useIsCurrentChainSupported from "./useIsCurrentChainSupported.tsx";
-import useContract from "./useContract.tsx";
+import useIsCurrentChainSupported from "./useIsCurrentChainSupported";
+import useVibeContract from "./useVibeContract";
 
 export {
   useIsCurrentChainSupported,
-  useContract
+  useVibeContract
 }

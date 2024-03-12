@@ -1,5 +1,5 @@
-import type { Account, Chain, Client, Transport } from "viem";
-import { providers, Signer } from "ethers";
+import type { Chain, Client, Transport } from "viem";
+import { providers } from "ethers";
 
 export type CallbackFunction = (...args: never[]) => void;
 
@@ -26,15 +26,4 @@ export function clientToProvider(client: Client<Transport, Chain>): providers.Js
     ensAddress: chain.contracts?.ensRegistry?.address,
   }
   return new providers.JsonRpcProvider(transport.url, network);
-}
-
-export function clientToSigner(client: Client<Transport, Chain, Account>): Signer {
-  const { account, chain, transport } = client;
-  const network = {
-    chainId: chain.id,
-    name: chain.name,
-    ensAddress: chain.contracts?.ensRegistry?.address,
-  }
-  const provider: providers.Web3Provider = new providers.Web3Provider(transport, network);
-  return provider.getSigner(account.address);
 }

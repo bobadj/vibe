@@ -1,6 +1,6 @@
 import { Context, createContext, JSX, useEffect } from "react";
 import { useAccount, useChainId } from "wagmi";
-import { useContract } from "../../hook";
+import { useVibeContract } from "../../hook";
 import { VibeAbi } from "../../../abis/types";
 
 interface AppContextValue {}
@@ -14,7 +14,7 @@ interface AppProviderProps {
 export default function AppProvider({ children }: AppProviderProps): JSX.Element {
   const defaultChainId: number = useChainId();
   const { chainId } = useAccount();
-  const contract: VibeAbi|null = useContract(chainId || defaultChainId);
+  const contract: VibeAbi|null = useVibeContract(chainId || defaultChainId);
   
   const fetchLastPostId = async () => {
     if (contract) {
