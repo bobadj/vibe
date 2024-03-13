@@ -7,7 +7,7 @@ export const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000'
 
 export const debounce = (callback: CallbackFunction, wait: number = 300) => {
   let timeoutId: any;
-  return (...args: never[]) => {
+  return (...args: any[]) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       callback(...args);

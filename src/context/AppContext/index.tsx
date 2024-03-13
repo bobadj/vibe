@@ -4,11 +4,12 @@ import { useVibeContract } from "../../hook";
 import { VibeAbi } from "../../../abis/types";
 import { useAccount, useChainId } from "wagmi";
 import { ISocialNetwork } from "../../../abis/types/VibeAbi.ts";
-import { Context, createContext, JSX, useEffect, useState } from "react";
+import { Context, createContext, JSX, useState } from "react";
 
 interface AppContextValue {
   posts: ISocialNetwork.PostStruct[],
-  isLoading: boolean
+  isLoading: boolean,
+  fetchPosts: (limit?: number) => void
 }
 
 export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
@@ -25,10 +26,6 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   const [ posts, setPosts ] = useState<ISocialNetwork.PostStruct[]>([]);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
   
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-  
   const fetchLastPostId = async (): Promise<number> => {
     let lastPostId = 0;
     if (contract) {
@@ -38,30 +35,29 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     return lastPostId;
   };
   
-  const fetchPosts = async (cleanup: boolean = true) => {
-    if (contract) {
+  const fetchPosts = async (loadLimit: number = 5) => {
+    if (contract && !isLoading) {
       const latestPostId: number = await fetchLastPostId();
-      const loadLimit = 5;
-      let loadStartAt = (latestPostId - (cleanup ? 0 : posts.length)) - loadLimit;
-      if (loadStartAt < 0) loadStartAt = 0;
+      let loadStartAt: number = (latestPostId - posts.length) - loadLimit;
+      if (loadStartAt < 0) {
+        loadLimit = +latestPostId - posts.length;
+        loadStartAt = 0;
+      }
 
       if (posts.length < +latestPostId) {
         setIsLoading(true);
-        let fetchedPosts = await contract.fetchPostsRanged(loadStartAt, loadLimit);
-        fetchedPosts = Array.from(fetchedPosts)
-          .reverse() // reverse order
-          .filter( (post) => post?.owner !== ZERO_ADDRESS ); // check for deleted posts
-        setPosts((prevState) =>
-          cleanup ? fetchedPosts : [...prevState, ...fetchedPosts]
-        );
+        const fetchedPosts = await contract.fetchPostsRanged(loadStartAt, loadLimit);
+        setPosts([...posts, ...Array.from(fetchedPosts).reverse()]);
         // lets delay loading a bit
         setTimeout(() => setIsLoading(false), 50);
       }
     }
   }
+
+  const getValidPosts = () => posts.filter( (post) => post?.owner !== ZERO_ADDRESS ); // check for deleted posts
   
   return (
-    <AppContext.Provider value={{ posts, isLoading }}>
+    <AppContext.Provider value={{ posts: getValidPosts(), isLoading, fetchPosts }}>
       {children}
     </AppContext.Provider>
   )
