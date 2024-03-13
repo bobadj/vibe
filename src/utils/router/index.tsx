@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import { ConnectWallet, Timeline } from "../pages";
-import PageLayout from "../layout/PageLayout";
+import { ConnectWallet, Timeline } from "../../pages";
+import PageLayout from "../../layout/PageLayout";
 
 export const TIMELINE_PATH: string = '/';
 export const CONNECT_WALLET_PATH: string = '/wallet';

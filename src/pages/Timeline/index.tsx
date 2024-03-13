@@ -1,30 +1,40 @@
 import { useAccount } from "wagmi";
 import { debounce } from "../../utils";
 import { useAppContext } from "../../hook";
-import { JSX, useEffect, useMemo } from "react";
+import { JSX, useEffect, useMemo, useState } from "react";
 import { PostForm, Search, Post, Loading } from "../../components";
 
 export default function Timeline(): JSX.Element {
   const { address, isConnected } = useAccount();
   const { posts, isLoading, fetchPosts } = useAppContext();
+  
+  const [ shouldLoadPosts, setShouldLoadPosts ] = useState<boolean>(true);
 
-  const handleScroll = useMemo(() => debounce(() => {
-    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
-      fetchPosts();
+  const handleScroll = useMemo(() => debounce((e: Event) => {
+    const offset = 200;
+    if (!shouldLoadPosts && (window.innerHeight + window.scrollY) >= document.body.scrollHeight - offset) {
+      e.preventDefault();
+      setShouldLoadPosts(true);
     }
-  }, 100), [fetchPosts]);
+  }, 50), [shouldLoadPosts]);
 
   // load a few more on mount to ensure that scroll is available
   useEffect(() => {
-    fetchPosts(7);
-  }, []);
+    if (shouldLoadPosts) handleFetchNewPosts(7);
+  }, [shouldLoadPosts]);
 
+  // scroll listener
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     }
   }, [handleScroll]);
+  
+  const handleFetchNewPosts = async (postsToLoad: number = 5) => {
+    await fetchPosts(postsToLoad);
+    setShouldLoadPosts(false);
+  }
   
   return (
     <div className="flex flex-col gap-12 px-2">

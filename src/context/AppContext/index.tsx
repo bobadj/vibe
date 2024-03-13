@@ -9,7 +9,7 @@ import { Context, createContext, JSX, useState } from "react";
 interface AppContextValue {
   posts: ISocialNetwork.PostStruct[],
   isLoading: boolean,
-  fetchPosts: (limit?: number) => void
+  fetchPosts: (limit?: number) => Promise<void>
 }
 
 export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
