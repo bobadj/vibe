@@ -5,7 +5,7 @@ import { JSX, useEffect, useMemo } from "react";
 import { PostForm, Search, Post, Loading } from "../../components";
 
 export default function Timeline(): JSX.Element {
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { posts, isLoading, fetchPosts } = useAppContext();
 
   const handleScroll = useMemo(() => debounce(() => {
@@ -29,15 +29,15 @@ export default function Timeline(): JSX.Element {
   return (
     <div className="flex flex-col gap-12 px-2">
       <Search />
-      {isConnected && <PostForm />}
+      {isConnected && <PostForm author={address} />}
       <div>
         <h2 className="font-medium leading-6 text-xl mb-6">Feed</h2>
         <div className="flex flex-col gap-3">
-          <Loading visible={isLoading} />
           {posts
               .map( (post, i) => (
                   <Post key={i} post={post} />
               ))}
+          <Loading visible={isLoading} />
         </div>
       </div>
     </div>

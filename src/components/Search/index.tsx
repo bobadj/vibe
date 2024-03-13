@@ -15,7 +15,7 @@ export default function Search({ placeholder = 'Search...', onSearch }: SearchPr
   
   return (
     <div className="w-full shadow-sm flex flex-row px-6 rounded-2xl border-[2px] border-gray bg-search">
-      <input className="w-full py-5 outline-0 bg-transparent font-normal text-stone-600"
+      <input className="w-full py-5 outline-0 outline-none bg-transparent font-normal text-stone-600"
              onChange={handleSearch}
              type="text"
              placeholder={placeholder} />

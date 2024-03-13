@@ -15,7 +15,7 @@ export default function Textarea({ placeholder, value, onChange, disabled }: Tex
   }), [onChange]);
   
   return (
-    <textarea className="bg-transparent w-full outline-0 resize-none"
+    <textarea className="bg-transparent w-full outline-0 outline-none resize-none"
               onChange={handleChange}
               defaultValue={value}
               disabled={disabled}
