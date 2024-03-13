@@ -1,8 +1,8 @@
 import { JSX, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 import { useEnsName } from "wagmi";
-import { formatTime } from "../../utils";
-import { Avatar, Card } from "../../components";
+import { formatTime, isValidURL } from "../../utils";
+import { Avatar, Card, Preview } from "../../components";
 import { ISocialNetwork } from "../../../abis/types/VibeAbi.ts";
 
 import coins from "./assets/coins.svg";
@@ -19,7 +19,7 @@ export default function Post({ post }: PostProps): JSX.Element {
   
   useEffect(() => {
     const URIs = (text || '').match(/(https?:\/\/[^ ]*)/g);
-    if (URIs && (URIs || []).length > 0) {
+    if (URIs && (URIs || []).length > 0 && isValidURL(URIs[0])) {
       setPreviewSource(URIs[0]);
     }
   }, [text]);
@@ -35,7 +35,14 @@ export default function Post({ post }: PostProps): JSX.Element {
         </div>
         <div className="post-content text-black">
           {
-            previewSource ? text.replace(previewSource, '') : text
+            previewSource
+              ?
+              <>
+                {text.replace(previewSource, '')}
+                <Preview uri={previewSource} />
+              </>
+              :
+              text
           }
         </div>
         <div className="post-actions flex flex-row gap-6 items-center">

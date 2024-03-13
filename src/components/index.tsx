@@ -7,6 +7,7 @@ import Textarea from "./Textarea";
 import Post from "./Post";
 import NetworkError from "./NetworkError";
 import Loading from "./Loading";
+import Preview from "./Preview";
 
 export {
   Card,
@@ -17,5 +18,6 @@ export {
   Textarea,
   Post,
   NetworkError,
-  Loading
+  Loading,
+  Preview
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { isImage, isValidURL } from "../../utils";
+import { isImage } from "../../utils";
 
 export const readMetaTag = (el: HTMLMetaElement, name: string): string|null => {
   const prop = el.getAttribute('name') || el.getAttribute('property');
@@ -10,7 +10,8 @@ export interface SiteLookupResponse {
   title?: string|null
   og?: Meta
   metadata?: Meta
-  images?: (string|null)[]
+  images?: (string|null)[],
+  type: "image"|"website"
 }
 
 export interface Meta {
@@ -69,9 +70,8 @@ export const extractImagesFromDocument = (document: Document) => {
 }
 
 export async function siteLookup(url: string): Promise<SiteLookupResponse> {
-  if (!isValidURL(url)) return {};
   // if is an image on other side, just return it
-  if (await isImage(url)) return { images: [url] };
+  if (await isImage(url)) return { images: [url], type: "image" };
   
   const document: Document = await fetchDocumentFromURI(url);
   const { og, metadata } = extractMetaFromDocument(document);
@@ -82,6 +82,7 @@ export async function siteLookup(url: string): Promise<SiteLookupResponse> {
     title,
     og,
     metadata,
-    images
+    images,
+    type: "website"
   };
 }
