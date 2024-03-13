@@ -1,15 +1,22 @@
-import { JSX } from "react";
-import avatar from './avatar.svg';
+import { JSX, useEffect, useState } from "react";
+import makeBlockie from 'ethereum-blockies-base64';
 
 interface AvatarProps {
-  small?: boolean
+  small?: boolean,
+  address: string
 }
 
-export default function Avatar({ small = false }: AvatarProps): JSX.Element {
-  const avatarClass: string = small ? 'w-[30px] h-[30px]' : 'min-w-[60px] min-h-[60px]'
+export default function Avatar({ address, small = false }: AvatarProps): JSX.Element {
+  const avatarClass: string = small ? 'w-[30px] h-auto' : 'w-[60px] h-auto';
+  const [ avatar, setAvatar ] = useState<string|undefined>();
+
+  useEffect(() => {
+    setAvatar(makeBlockie(address));
+  }, [address]);
+
   return (
     <div className="avatar">
-      <img src={avatar} alt="avatar" className={avatarClass} />
+      <img src={avatar} alt="avatar" className={`rounded-sm ${avatarClass}`} />
     </div>
   )
 }

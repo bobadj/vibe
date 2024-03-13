@@ -17,7 +17,7 @@ export default function Post({ post }: PostProps): JSX.Element {
   
   return (
     <Card className="border-[2px] rounded-[1rem] flex flex-row gap-3 w-auto">
-      <Avatar />
+      <Avatar address={post?.owner} />
       <div className="flex flex-col gap-3">
         <div className="flex flex-row gap-2 items-center font-bold text-black">
           <p className="text-black w-auto truncate">{ensName || post?.owner}</p>

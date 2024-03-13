@@ -14,8 +14,9 @@ export default function Timeline(): JSX.Element {
     }
   }, 100), [fetchPosts]);
 
+  // load a few more on mount to ensure that scroll is available
   useEffect(() => {
-    fetchPosts();
+    fetchPosts(7);
   }, []);
 
   useEffect(() => {
