@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { JSX, useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 import { useEnsName } from "wagmi";
 import { formatTime } from "../../utils";
@@ -13,19 +13,30 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps): JSX.Element {
-  const { data: ensName } = useEnsName({ address: post?.owner as any });
+  const { text, timestamp, owner } = post;
+  const { data: ensName } = useEnsName({ address: owner as any });
+  const [ previewSource, setPreviewSource ] = useState<string|undefined>()
+  
+  useEffect(() => {
+    const URIs = (text || '').match(/(https?:\/\/[^ ]*)/g);
+    if (URIs && (URIs || []).length > 0) {
+      setPreviewSource(URIs[0]);
+    }
+  }, [text]);
   
   return (
     <Card className="border-[2px] rounded-[1rem] flex flex-row gap-3 w-auto">
-      <Avatar address={post?.owner} />
+      <Avatar address={owner} />
       <div className="flex flex-col gap-3">
         <div className="flex flex-row gap-2 items-center font-bold text-black">
-          <p className="text-black w-auto truncate">{ensName || post?.owner}</p>
+          <p className="text-black w-auto truncate">{ensName || owner}</p>
           ·
-          <small>{formatTime(BigNumber.from(post?.timestamp).toNumber())}</small>
+          <small>{formatTime(BigNumber.from(timestamp).toNumber())}</small>
         </div>
         <div className="post-content text-black">
-          <p>{post?.text}</p>
+          {
+            previewSource ? text.replace(previewSource, '') : text
+          }
         </div>
         <div className="post-actions flex flex-row gap-6 items-center">
           <span className="flex flex-row items-center gap-2 cursor-pointer text-red text-xs">
