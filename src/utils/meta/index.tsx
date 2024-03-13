@@ -26,15 +26,20 @@ export interface OgMeta extends Meta{
   site_name?: string
 }
 
-export const fetchDocumentFromURI = async (uri: string): Promise<Document> => {
-  const config = {
-    mode: 'no-cors',
-    crossdomain: true,
-    headers: {'Access-Control-Allow-Origin': '*'}
-  };
-  const { data } = await axios.get('https://cors-anywhere.herokuapp.com/'+uri, config);
-  const domParser: DOMParser = new DOMParser();
-  return domParser.parseFromString(data, 'text/html');
+export const fetchDocumentFromURI = async (uri: string): Promise<Document|null> => {
+  try {
+    const config = {
+      mode: 'no-cors',
+      crossdomain: true,
+      headers: {'Access-Control-Allow-Origin': '*'}
+    };
+    const { data } = await axios.get('https://cors-anywhere.herokuapp.com/'+uri, config);
+    const domParser: DOMParser = new DOMParser();
+    return domParser.parseFromString(data, 'text/html');
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
 
 export const extractMetaFromDocument = (document: Document): { og: OgMeta, metadata: Meta } => {
@@ -69,11 +74,12 @@ export const extractImagesFromDocument = (document: Document) => {
     .filter( (el: string|null) => el);
 }
 
-export async function siteLookup(url: string): Promise<SiteLookupResponse> {
+export async function siteLookup(url: string): Promise<SiteLookupResponse|null> {
   // if is an image on other side, just return it
   if (await isImage(url)) return { images: [url], type: "image" };
   
-  const document: Document = await fetchDocumentFromURI(url);
+  const document: Document|null = await fetchDocumentFromURI(url);
+  if (!document) return null;
   const { og, metadata } = extractMetaFromDocument(document);
   const title = document.getElementsByTagName('title').item(0)?.textContent;
   const images = extractImagesFromDocument(document);
