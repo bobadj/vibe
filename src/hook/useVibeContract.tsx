@@ -1,14 +1,17 @@
 import { useMemo } from "react";
+import { Config, useClient } from "wagmi";
+import { clientToProvider } from "../utils";
 import { contractAddresses } from "../utils/config";
 import { VibeAbi, VibeAbi__factory } from "../../abis/types";
-import useEthersSignerOrProvider from "./useEthersSignerOrProvider";
 
 export default function useVibeContract(chainId: number): VibeAbi|null {
-  const signerOrProvider = useEthersSignerOrProvider(chainId);
-  
+  const client = useClient<Config>({ chainId });
+
   return useMemo(() => {
+    if (!client) return null;
+    const provider = clientToProvider(client);
     const address: string|undefined = contractAddresses[chainId];
-    if (!address || !signerOrProvider) return null;
-    return VibeAbi__factory.connect(address, signerOrProvider);
-  }, [chainId, signerOrProvider]);
+    if (!address || !provider) return null;
+    return VibeAbi__factory.connect(address, provider);
+  }, [chainId, client]);
 }

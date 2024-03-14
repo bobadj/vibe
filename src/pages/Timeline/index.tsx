@@ -1,14 +1,17 @@
-import { useAccount } from "wagmi";
+import { ethers } from "ethers";
 import { debounce } from "../../utils";
 import { useAppContext } from "../../hook";
+import { useAccount, useBalance } from "wagmi";
 import { JSX, useEffect, useMemo, useState } from "react";
 import { PostForm, Search, Post, Loading } from "../../components";
 
 export default function Timeline(): JSX.Element {
   const { address, isConnected } = useAccount();
-  const { posts, isLoading, fetchPosts } = useAppContext();
+  const { posts, isLoading, fetchPosts, estimateFeeForNewPost, submitPost } = useAppContext();
+  const { data: balance } = useBalance({ address });
   
   const [ shouldLoadPosts, setShouldLoadPosts ] = useState<boolean>(true);
+  const [ isPostFormEnabled, setIsPostFormEnabled ] = useState<boolean>(false);
 
   const handleScroll = useMemo(() => debounce((e: Event) => {
     const offset = 200;
@@ -35,11 +38,24 @@ export default function Timeline(): JSX.Element {
     await fetchPosts(postsToLoad);
     setShouldLoadPosts(false);
   }
-  
+
+  const handlePostFormChange = async (value: string) => {
+    const usersBalance = ethers.utils.formatUnits(balance?.value || 0, 'ether');
+    const estimatedGas = await estimateFeeForNewPost(value);
+    setIsPostFormEnabled(+usersBalance > +estimatedGas);
+  }
+
+  const handlePostFormSubmit = async (value: string) => {
+    await submitPost(value);
+  }
+
   return (
     <div className="flex flex-col gap-12 px-2">
       <Search />
-      {isConnected && <PostForm author={address} />}
+      {isConnected && <PostForm author={address}
+                                onSubmit={handlePostFormSubmit}
+                                onChange={handlePostFormChange}
+                                disabled={!isPostFormEnabled} />}
       <div>
         <h2 className="font-medium leading-6 text-xl mb-6">Feed</h2>
         <div className="flex flex-col gap-3">

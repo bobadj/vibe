@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { ZERO_ADDRESS } from '../../utils';
 import { useVibeContract } from "../../hook";
 import { VibeAbi } from "../../../abis/types";
@@ -10,6 +10,8 @@ interface AppContextValue {
   posts: ISocialNetwork.PostStruct[],
   isLoading: boolean,
   fetchPosts: (limit?: number) => Promise<void>
+  estimateFeeForNewPost: (value: string) => Promise<string>
+  submitPost: (content: string) => Promise<void>
 }
 
 export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
@@ -55,9 +57,19 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   }
 
   const getValidPosts = () => posts.filter( (post) => post?.owner !== ZERO_ADDRESS ); // check for deleted posts
+
+  const estimateFeeForNewPost = async (value: string): Promise<string> => {
+    const estimatedFee = await contract?.estimateGas?.createPost(value);
+    if (estimatedFee) {
+      return ethers.utils.formatUnits(estimatedFee, 'ether');
+    }
+    return '0';
+  }
+
+  const submitPost = async (): Promise<void> => {}
   
   return (
-    <AppContext.Provider value={{ posts: getValidPosts(), isLoading, fetchPosts }}>
+    <AppContext.Provider value={{ posts: getValidPosts(), isLoading, fetchPosts, estimateFeeForNewPost, submitPost }}>
       {children}
     </AppContext.Provider>
   )
