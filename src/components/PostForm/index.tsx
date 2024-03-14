@@ -21,8 +21,8 @@ export default function PostForm({ title, onSubmit, onChange, disabled, author, 
   };
 
   const handleChange = useMemo(() => debounce((value: string) => {
+    setPostContent(value);
     if (value.length > 0) {
-      setPostContent(value);
       if (onChange) onChange(value);
     }
   }, 100), [onChange]);

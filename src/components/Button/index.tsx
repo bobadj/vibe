@@ -23,7 +23,7 @@ export default function Button({ children, className, classType = 'primary', dis
   }
   
   return (
-    <button className={`${getButtonStyles()} ${disabled && 'cursor-not-allowed'} flex flex-row items-center font-medium leading-6 rounded-2xl px-[70px] py-[13px] text-xl w-max ${className || ''}`}
+    <button className={`${getButtonStyles()} ${disabled && 'opacity-70 cursor-not-allowed'} flex flex-row items-center font-medium leading-6 rounded-2xl px-[70px] py-[13px] text-xl w-max ${className || ''}`}
             disabled={disabled}
             type={type}
             onClick={onClick}>

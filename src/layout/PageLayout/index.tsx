@@ -28,7 +28,7 @@ export default function PageLayout(): JSX.Element {
         </Card>
         <div className="sidebar">
           <Card>
-            <Button classType="secondary" disabled={isConnected} onClick={() => navigate(CONNECT_WALLET_PATH)}>
+            <Button className="!opacity-100" classType="secondary" disabled={isConnected} onClick={() => navigate(CONNECT_WALLET_PATH)}>
               {(ensName || address) ? ensName || formatAddress(address) : 'Connect wallet'}
             </Button>
           </Card>
