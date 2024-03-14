@@ -1,5 +1,4 @@
-import { debounce } from "../../utils";
-import { FormEvent, JSX, useMemo, useState } from "react";
+import { FormEvent, JSX, useState } from "react";
 import { Card, Button, Avatar, Textarea } from "./../../components";
 
 interface PostFormProps {
@@ -21,12 +20,12 @@ export default function PostForm({ title, onSubmit, onChange, disabled, author, 
       onSubmit(postContent);
   };
 
-  const handleChange = useMemo(() => debounce((value: string) => {
+  const handleChange = (value: string) => {
     setPostContent(value);
     if (value.length > 0) {
       if (onChange) onChange(value);
     }
-  }, 100), [onChange]);
+  };
   
   return (
     <form onSubmit={handleSubmit}>

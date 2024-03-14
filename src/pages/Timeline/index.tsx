@@ -3,7 +3,7 @@ import { debounce } from "../../utils";
 import { useAppContext } from "../../hook";
 import { useAccount, useBalance } from "wagmi";
 import { JSX, useEffect, useMemo, useState } from "react";
-import { PostForm, Search, Post, Loading, Modal } from "../../components";
+import { PostForm, Search, Post, Loading, Modal, DonationForm } from "../../components";
 
 export default function Timeline(): JSX.Element {
   const { address, isConnected } = useAccount();
@@ -62,12 +62,7 @@ export default function Timeline(): JSX.Element {
     <>
       {isConnected && (
         <Modal open={isSponsorModalVisible} onClose={() => setIsSponsorModalVisible(false)}>
-          <PostForm author={address}
-                    onSubmit={handlePostFormSubmit}
-                    onChange={handlePostFormChange}
-                    showSpinner={showFormSpinner}
-                    hideTitle
-                    disabled={!isPostFormEnabled || showFormSpinner} />
+          <DonationForm />
         </Modal>
       )}
       <div className="flex flex-col gap-12 px-2">

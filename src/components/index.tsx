@@ -10,6 +10,7 @@ import Loading from "./Loading";
 import Preview from "./Preview";
 import PageError from "./PageError";
 import Modal from "./Modal";
+import DonationForm from "./DonationForm";
 
 export {
   Card,
@@ -23,5 +24,6 @@ export {
   Loading,
   Preview,
   PageError,
-  Modal
+  Modal,
+  DonationForm
 }
