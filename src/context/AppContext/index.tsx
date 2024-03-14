@@ -7,12 +7,16 @@ import { Context, createContext, JSX, useEffect, useState } from "react";
 import { ISocialNetwork, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
 
 interface AppContextValue {
-  posts: ISocialNetwork.PostStruct[],
+  posts: PostStruct[],
   sponsoredPosts: number[]
   isLoading: boolean,
   fetchPosts: (limit?: number) => Promise<void>
   estimateFeeForNewPost: (value: string) => Promise<string>
   submitPost: (content: string) => Promise<void>
+}
+
+export interface PostStruct extends ISocialNetwork.PostStruct {
+  id: number
 }
 
 export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
@@ -26,7 +30,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   const { chainId, address } = useAccount();
   const contract: VibeAbi|null = useVibeContract(chainId || defaultChainId);
   
-  const [ posts, setPosts ] = useState<ISocialNetwork.PostStruct[]>([]);
+  const [ posts, setPosts ] = useState<PostStruct[]>([]);
   const [ sponsoredPosts, setSponsoredPosts ] = useState<Array<number>>([]);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
 
@@ -55,7 +59,13 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
       if (posts.length < +latestPostId) {
         setIsLoading(true);
         const fetchedPosts = await contract.fetchPostsRanged(loadStartAt, loadLimit);
-        setPosts([...posts, ...Array.from(fetchedPosts).reverse()]);
+        const modifiedPosts: PostStruct[] = Array.from(fetchedPosts)
+          .reverse()
+          .map((post: ISocialNetwork.PostStruct, i: number) => (
+            {...post, id: (loadStartAt + loadLimit) - (i+1) }
+          ));
+        
+        setPosts([...posts, ...modifiedPosts]);
         // lets delay loading a bit
         setTimeout(() => setIsLoading(false), 50);
       }
@@ -80,7 +90,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
       await transaction.wait(1);
       const latestPostId = await fetchLastPostId();
       const post = await contract?.getPost(latestPostId);
-      if (post) setPosts([post, ...posts]);
+      if (post) setPosts([{...post, id: latestPostId}, ...posts]);
     }
   }
 

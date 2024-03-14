@@ -9,6 +9,7 @@ import NetworkError from "./NetworkError";
 import Loading from "./Loading";
 import Preview from "./Preview";
 import PageError from "./PageError";
+import Modal from "./Modal";
 
 export {
   Card,
@@ -21,5 +22,6 @@ export {
   NetworkError,
   Loading,
   Preview,
-  PageError
+  PageError,
+  Modal
 }

@@ -15,6 +15,9 @@ export default {
         // card: 'rgba(255, 255, 255, 0.6)'
         // 'card': 'radial-gradient(100% 249.45% at 0% 2.78%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 100%)',
       },
+      borderColor: {
+        modal: 'rgba(0, 0, 0, 0.1)'
+      },
       colors: {
         gray: {
           DEFAULT: '#FFFFFF3D',

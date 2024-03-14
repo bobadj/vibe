@@ -1,18 +1,19 @@
 import { JSX } from "react";
 import { useEnsName } from "wagmi";
 import { Avatar, Card } from "../../components";
-import { ISocialNetwork } from "../../../abis/types/VibeAbi.ts";
+import { PostStruct } from "../../context/AppContext";
 
 import PostHeader from "./PostHeader";
 import PostContent from "./PostContent";
 import PostAction from "./PostAction";
 
 interface PostProps {
-  post: ISocialNetwork.PostStruct
+  post: PostStruct,
+  onAction: (id: number, action: "sponsor"|"share") => any
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
-  const { text, timestamp, owner } = post;
+export default function Post({ post, onAction }: PostProps): JSX.Element {
+  const { id, text, timestamp, owner } = post;
   const { data: ensName } = useEnsName({ address: owner as any });
   
   return (
@@ -21,7 +22,7 @@ export default function Post({ post }: PostProps): JSX.Element {
       <div className="flex flex-col gap-3">
         <PostHeader author={ensName || owner} timestamp={timestamp} />
         <PostContent content={text} />
-        <PostAction />
+        <PostAction handleAction={(action) => onAction(id, action)} />
       </div>
     </Card>
   )

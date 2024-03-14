@@ -3,15 +3,16 @@ import { FormEvent, JSX, useMemo, useState } from "react";
 import { Card, Button, Avatar, Textarea } from "./../../components";
 
 interface PostFormProps {
-  title?: string,
-  onSubmit?: (postContent: string) => void,
-  onChange?: (postContent: string) => void,
-  disabled?: boolean,
-  author?: string,
+  title?: string
+  onSubmit?: (postContent: string) => void
+  onChange?: (postContent: string) => void
+  disabled?: boolean
+  author?: string
   showSpinner?: boolean
+  hideTitle?: boolean
 }
 
-export default function PostForm({ title, onSubmit, onChange, disabled, author, showSpinner = false }: PostFormProps): JSX.Element {
+export default function PostForm({ title, onSubmit, onChange, disabled, author, showSpinner = false, hideTitle = false }: PostFormProps): JSX.Element {
   const [ postContent, setPostContent ] = useState<string|null>(null);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -29,7 +30,9 @@ export default function PostForm({ title, onSubmit, onChange, disabled, author, 
   
   return (
     <form onSubmit={handleSubmit}>
-      <h2 className="font-medium leading-6 text-xl mb-6">{title ? title : 'Update your Vibe'}</h2>
+      {!hideTitle && (
+        <h2 className="font-medium leading-6 text-xl mb-6">{title ? title : 'Update your Vibe'}</h2>
+      )}
       <Card className="border-[2px] rounded-[1rem]">
         <div className="flex flex-row gap-4 mb-6">
           <Avatar address={author} small />
