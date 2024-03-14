@@ -9,6 +9,7 @@ export const router = () => {
   return createBrowserRouter([
     {
       element: <PageLayout />,
+      errorElement: <PageLayout />,
       children: [
         {
           path: TIMELINE_PATH,

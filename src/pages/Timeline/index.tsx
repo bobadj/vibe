@@ -63,9 +63,10 @@ export default function Timeline(): JSX.Element {
         <h2 className="font-medium leading-6 text-xl mb-6">Feed</h2>
         <div className="flex flex-col gap-3">
           {posts
-              .map( (post, i) => (
-                  <Post key={i} post={post} />
-              ))}
+            .map( (post, i) => (
+              <Post key={i}
+                    post={post} />
+            ))}
           <Loading visible={isLoading} />
         </div>
       </div>

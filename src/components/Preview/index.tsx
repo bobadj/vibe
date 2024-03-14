@@ -36,9 +36,9 @@ export default function Preview({ uri }: PreviewProps): JSX.Element|null {
   
   if (data.type === 'image' && data.images && data.images.length > 0) {
     return (
-      <div className="my-2 shadow rounded-lg">
+      <a href={uri} target="_blank" className="my-2 shadow rounded-lg">
         <img className="h-auto rounded-lg" src={data.images[0] as string} alt={data.title as string} />
-      </div>
+      </a>
     )
   }
   

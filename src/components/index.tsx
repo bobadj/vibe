@@ -8,6 +8,7 @@ import Post from "./Post";
 import NetworkError from "./NetworkError";
 import Loading from "./Loading";
 import Preview from "./Preview";
+import PageError from "./PageError";
 
 export {
   Card,
@@ -19,5 +20,6 @@ export {
   Post,
   NetworkError,
   Loading,
-  Preview
+  Preview,
+  PageError
 }

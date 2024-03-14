@@ -3,16 +3,16 @@ import { useVibeContract } from "../../hook";
 import { VibeAbi } from "../../../abis/types";
 import { useAccount, useChainId } from "wagmi";
 import { getEthersSigner, ZERO_ADDRESS } from '../../utils';
-import { Context, createContext, JSX, useState } from "react";
+import { Context, createContext, JSX, useEffect, useState } from "react";
 import { ISocialNetwork, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
 
 interface AppContextValue {
   posts: ISocialNetwork.PostStruct[],
+  sponsoredPosts: number[]
   isLoading: boolean,
   fetchPosts: (limit?: number) => Promise<void>
   estimateFeeForNewPost: (value: string) => Promise<string>
   submitPost: (content: string) => Promise<void>
-  getSponsoredPostsForAddress: (address: string) => Promise<PostSponsoredEvent[]|undefined>
 }
 
 export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
@@ -23,11 +23,16 @@ interface AppProviderProps {
 
 export default function AppProvider({ children }: AppProviderProps): JSX.Element {
   const defaultChainId: number = useChainId();
-  const { chainId } = useAccount();
+  const { chainId, address } = useAccount();
   const contract: VibeAbi|null = useVibeContract(chainId || defaultChainId);
   
   const [ posts, setPosts ] = useState<ISocialNetwork.PostStruct[]>([]);
+  const [ sponsoredPosts, setSponsoredPosts ] = useState<Array<number>>([]);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
+
+  useEffect(() => {
+    getSponsoredPostsForAddress((address || '') as string);
+  }, [address])
   
   const fetchLastPostId = async (): Promise<number> => {
     let lastPostId = 0;
@@ -38,7 +43,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     return lastPostId;
   };
   
-  const fetchPosts = async (loadLimit: number = 5) => {
+  const fetchPosts = async (loadLimit: number = 5): Promise<void> => {
     if (contract && !isLoading) {
       const latestPostId: number = await fetchLastPostId() + 1;
       let loadStartAt: number = (latestPostId - posts.length) - loadLimit;
@@ -79,19 +84,24 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     }
   }
 
-  const getSponsoredPostsForAddress = async (address: string): Promise<PostSponsoredEvent[]|undefined> => {
-    return await contract?.queryFilter(
-        contract?.filters.PostSponsored(null, null, address)
-    )
+  const getSponsoredPostsForAddress = async (address: string): Promise<void> => {
+    let events: PostSponsoredEvent[] = [];
+    if (address) {
+      events = await contract?.queryFilter(
+          contract?.filters.PostSponsored(null, null, address)
+      ) || [];
+    }
+    const postIds: Array<number> = events?.map( (ev: PostSponsoredEvent) => BigNumber.from(ev.args[0] || '0').toNumber());
+    setSponsoredPosts(postIds);
   }
 
   const contextValue: AppContextValue = {
     posts: getValidPosts(),
+    sponsoredPosts,
     isLoading,
     fetchPosts,
     estimateFeeForNewPost,
-    submitPost,
-    getSponsoredPostsForAddress
+    submitPost
   }
   
   return (

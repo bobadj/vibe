@@ -1,6 +1,6 @@
 import { ChangeEvent, JSX, useMemo } from "react";
 import { debounce } from "../../utils";
-import searchIcon from "./search.svg";
+import searchIcon from "./assets/search.svg";
 
 interface SearchProps {
   placeholder?: string,

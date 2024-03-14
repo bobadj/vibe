@@ -37,7 +37,10 @@ export default function PostForm({ title, onSubmit, onChange, disabled, author, 
                     placeholder="How’s your Vibe today, 3327?" />
         </div>
         <div className="w-full flex justify-end">
-          <Button type="submit" loading={showSpinner} disabled={disabled || showSpinner || (postContent || '').length <= 0}>POST</Button>
+          <Button type="submit"
+                  loading={showSpinner} disabled={disabled || showSpinner || (postContent || '').length <= 0}>
+            POST
+          </Button>
         </div>
       </Card>
     </form>
