@@ -1,10 +1,10 @@
 import { BigNumber, ethers } from "ethers";
-import { getEthersSigner, ZERO_ADDRESS } from '../../utils';
 import { useVibeContract } from "../../hook";
 import { VibeAbi } from "../../../abis/types";
 import { useAccount, useChainId } from "wagmi";
-import { ISocialNetwork } from "../../../abis/types/VibeAbi.ts";
+import { getEthersSigner, ZERO_ADDRESS } from '../../utils';
 import { Context, createContext, JSX, useState } from "react";
+import { ISocialNetwork, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
 
 interface AppContextValue {
   posts: ISocialNetwork.PostStruct[],
@@ -12,6 +12,7 @@ interface AppContextValue {
   fetchPosts: (limit?: number) => Promise<void>
   estimateFeeForNewPost: (value: string) => Promise<string>
   submitPost: (content: string) => Promise<void>
+  getSponsoredPostsForAddress: (address: string) => Promise<PostSponsoredEvent[]|undefined>
 }
 
 export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
@@ -77,9 +78,24 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
       if (post) setPosts([post, ...posts]);
     }
   }
+
+  const getSponsoredPostsForAddress = async (address: string): Promise<PostSponsoredEvent[]|undefined> => {
+    return await contract?.queryFilter(
+        contract?.filters.PostSponsored(null, null, address)
+    )
+  }
+
+  const contextValue: AppContextValue = {
+    posts: getValidPosts(),
+    isLoading,
+    fetchPosts,
+    estimateFeeForNewPost,
+    submitPost,
+    getSponsoredPostsForAddress
+  }
   
   return (
-    <AppContext.Provider value={{ posts: getValidPosts(), isLoading, fetchPosts, estimateFeeForNewPost, submitPost }}>
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   )
