@@ -12,6 +12,7 @@ export default function Timeline(): JSX.Element {
   
   const [ shouldLoadPosts, setShouldLoadPosts ] = useState<boolean>(true);
   const [ isPostFormEnabled, setIsPostFormEnabled ] = useState<boolean>(false);
+  const [ showFormSpinner, setShowFormSpinner ] = useState<boolean>(false);
 
   const handleScroll = useMemo(() => debounce((e: Event) => {
     const offset = 200;
@@ -21,9 +22,8 @@ export default function Timeline(): JSX.Element {
     }
   }, 50), [shouldLoadPosts]);
 
-  // load a few more on mount to ensure that scroll is available
   useEffect(() => {
-    if (shouldLoadPosts) handleFetchNewPosts(7);
+    if (shouldLoadPosts) handleFetchNewPosts();
   }, [shouldLoadPosts]);
 
   // scroll listener
@@ -46,7 +46,9 @@ export default function Timeline(): JSX.Element {
   }
 
   const handlePostFormSubmit = async (value: string) => {
+    setShowFormSpinner(true)
     await submitPost(value);
+    setShowFormSpinner(false);
   }
 
   return (
@@ -55,7 +57,8 @@ export default function Timeline(): JSX.Element {
       {isConnected && <PostForm author={address}
                                 onSubmit={handlePostFormSubmit}
                                 onChange={handlePostFormChange}
-                                disabled={!isPostFormEnabled} />}
+                                showSpinner={showFormSpinner}
+                                disabled={!isPostFormEnabled || showFormSpinner} />}
       <div>
         <h2 className="font-medium leading-6 text-xl mb-6">Feed</h2>
         <div className="flex flex-col gap-3">

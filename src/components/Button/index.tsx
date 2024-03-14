@@ -1,14 +1,16 @@
 import { JSX, MouseEventHandler } from "react";
+import Loading from "../Loading";
 
 interface ButtonProps {
   children: string|JSX.Element,
   className?: string,
   classType?: 'primary'|'secondary'|'transparent',
   disabled?: boolean,
+  loading?: boolean
   onClick?: MouseEventHandler,
   type?: "submit"|"reset"|"button"
 }
-export default function Button({ children, className, classType = 'primary', disabled = false, onClick, type = 'button' }: ButtonProps) {
+export default function Button({ children, className, classType = 'primary', disabled = false, loading = false, onClick, type = 'button' }: ButtonProps) {
   const getButtonStyles = (): string => {
     switch (classType) {
       case 'transparent':
@@ -25,6 +27,7 @@ export default function Button({ children, className, classType = 'primary', dis
             disabled={disabled}
             type={type}
             onClick={onClick}>
+      <Loading visible={loading} spinner />
       {children}
     </button>
   )

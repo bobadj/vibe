@@ -1,5 +1,7 @@
 import { providers } from "ethers";
-import type { Chain, Client, Transport } from "viem";
+import { getConnectorClient } from '@wagmi/core'
+import type { Account, Chain, Client, Transport } from "viem";
+import { wagmiConfig } from "./config";
 
 export type CallbackFunction = (...args: any) => any;
 
@@ -28,6 +30,22 @@ export function clientToProvider(client: Client<Transport, Chain>): providers.Js
     ensAddress: chain.contracts?.ensRegistry?.address,
   }
   return new providers.JsonRpcProvider(transport.url, network);
+}
+
+export function clientToSigner(client: Client<Transport, Chain, Account>) {
+    const { account, chain, transport } = client
+    const network = {
+        chainId: chain.id,
+        name: chain.name,
+        ensAddress: chain.contracts?.ensRegistry?.address,
+    }
+    const provider = new providers.Web3Provider(transport, network)
+    return provider.getSigner(account.address);
+}
+
+export async function getEthersSigner() {
+    const client = await getConnectorClient(wagmiConfig)
+    return clientToSigner(client)
 }
 
 export const formatTime = (timestamp: number, useFullFormat: boolean = true) => {

@@ -7,10 +7,11 @@ interface PostFormProps {
   onSubmit?: (postContent: string) => void,
   onChange?: (postContent: string) => void,
   disabled?: boolean,
-  author?: string
+  author?: string,
+  showSpinner?: boolean
 }
 
-export default function PostForm({ title, onSubmit, onChange, disabled, author }: PostFormProps): JSX.Element {
+export default function PostForm({ title, onSubmit, onChange, disabled, author, showSpinner = false }: PostFormProps): JSX.Element {
   const [ postContent, setPostContent ] = useState<string|null>(null);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -36,7 +37,7 @@ export default function PostForm({ title, onSubmit, onChange, disabled, author }
                     placeholder="How’s your Vibe today, 3327?" />
         </div>
         <div className="w-full flex justify-end">
-          <Button type="submit" disabled={disabled || (postContent || '').length <= 0}>POST</Button>
+          <Button type="submit" loading={showSpinner} disabled={disabled || showSpinner || (postContent || '').length <= 0}>POST</Button>
         </div>
       </Card>
     </form>

@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from "ethers";
-import { ZERO_ADDRESS } from '../../utils';
+import { getEthersSigner, ZERO_ADDRESS } from '../../utils';
 import { useVibeContract } from "../../hook";
 import { VibeAbi } from "../../../abis/types";
 import { useAccount, useChainId } from "wagmi";
@@ -39,7 +39,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   
   const fetchPosts = async (loadLimit: number = 5) => {
     if (contract && !isLoading) {
-      const latestPostId: number = await fetchLastPostId();
+      const latestPostId: number = await fetchLastPostId() + 1;
       let loadStartAt: number = (latestPostId - posts.length) - loadLimit;
       if (loadStartAt < 0) {
         loadLimit = +latestPostId - posts.length;
@@ -66,7 +66,17 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     return '0';
   }
 
-  const submitPost = async (): Promise<void> => {}
+  const submitPost = async (content: string): Promise<void> => {
+    const signer = await getEthersSigner();
+    const connectedContract = contract?.connect(signer);
+    const transaction = await connectedContract?.createPost(content);
+    if (transaction) {
+      await transaction.wait(1);
+      const latestPostId = await fetchLastPostId();
+      const post = await contract?.getPost(latestPostId);
+      if (post) setPosts([post, ...posts]);
+    }
+  }
   
   return (
     <AppContext.Provider value={{ posts: getValidPosts(), isLoading, fetchPosts, estimateFeeForNewPost, submitPost }}>
