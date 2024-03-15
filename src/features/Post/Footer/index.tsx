@@ -5,17 +5,17 @@ import type { PostActionType } from "../../../utils/types";
 import coins from "./assets/coins.svg";
 import share from "./assets/share.svg";
 
-interface PostActionProps {
-  handleAction: (action: PostActionType) => any
+interface FooterProps {
+  handleAction?: (action: PostActionType) => any
   disabled?: boolean
 }
 
-export default function PostAction({ handleAction, disabled = false }: PostActionProps): JSX.Element {
-
+export default function Footer({ handleAction, disabled = false }: FooterProps): JSX.Element {
+  
   const handleClick = (action: PostActionType) => {
-    if (!disabled) handleAction(action);
+    if (!disabled && handleAction) handleAction(action);
   }
-
+  
   return (
     <div className={`post-actions flex flex-row gap-6 items-center ${disabled ? 'opacity-50' : 'opacity-100'}`}>
       <button className={`flex flex-row items-center gap-2 text-red text-xs ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}

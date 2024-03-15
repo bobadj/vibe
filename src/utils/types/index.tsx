@@ -10,3 +10,5 @@ export type PostActionType = "sponsor"|"share";
 export type PostStruct = ISocialNetwork.PostStruct & {
   id: number
 }
+
+export type CallbackFunction = (...args: any) => any;

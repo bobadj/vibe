@@ -1,7 +1,7 @@
 import { JSX, useEffect } from "react";
 import { Button } from "../../components";
 import { supportedWallets, wagmiConfig } from "../../utils/config";
-import { TIMELINE_PATH } from "../../utils/router";
+import { FEED_PATH } from "../../utils/router";
 import { connect } from '@wagmi/core';
 import { useAccount } from "wagmi";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ export default function ConnectWallet(): JSX.Element {
   const navigate = useNavigate();
   
   useEffect( () => {
-    if (address || chainId) navigate(TIMELINE_PATH);
+    if (address || chainId) navigate(FEED_PATH);
   }, [address, chainId]);
   
   return (

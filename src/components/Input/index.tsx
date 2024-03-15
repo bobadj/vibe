@@ -2,7 +2,7 @@ import { ChangeEvent, JSX, useMemo } from "react";
 import { debounce } from "../../utils";
 
 interface InputProps {
-  type: "text"|"number"
+  type: "text"|"number"|"search"
   className?: string
   placeholder?: string
   onChange?: (value: string) => void

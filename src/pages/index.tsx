@@ -1,7 +1,9 @@
-import Timeline from "./Timeline";
 import ConnectWallet from "./ConnectWallet";
+import Feed from "./Feed";
+import Profile from "./Profile";
 
 export {
-  Timeline,
-  ConnectWallet
+  ConnectWallet,
+  Feed,
+  Profile
 }

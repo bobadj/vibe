@@ -1,12 +1,12 @@
 import { JSX, useEffect, useState } from "react";
 import { isValidURL } from "../../../utils";
-import { Preview } from "../../../components";
+import Preview from "../../Preview";
 
-interface PostContentProps {
+interface ContentProps {
   content: string
 }
 
-export default function PostContent({ content }: PostContentProps): JSX.Element {
+export default function Content({ content }: ContentProps): JSX.Element {
   const [ previewSource, setPreviewSource ] = useState<string|undefined|null>(null);
 
   useEffect(() => {

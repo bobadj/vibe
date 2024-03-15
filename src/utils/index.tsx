@@ -1,9 +1,9 @@
 import { providers } from "ethers";
-import { getConnectorClient } from '@wagmi/core'
-import type { Account, Chain, Client, Transport } from "viem";
 import { wagmiConfig } from "./config";
+import { getConnectorClient } from '@wagmi/core'
 
-export type CallbackFunction = (...args: any) => any;
+import type { CallbackFunction } from "./types";
+import type { Account, Chain, Client, Transport } from "viem";
 
 export const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000';
 

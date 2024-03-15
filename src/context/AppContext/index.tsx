@@ -1,4 +1,4 @@
-import { useVibeContract } from "../../hook";
+import { useVibeContract } from "../../hooks";
 import { VibeAbi } from "../../../abis/types";
 import { useAccount, useChainId } from "wagmi";
 import { getEthersSigner, ZERO_ADDRESS } from '../../utils';
