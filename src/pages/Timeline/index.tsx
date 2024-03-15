@@ -10,24 +10,27 @@ import type { OutletContextType, PostActionType, PostStruct } from "../../utils/
 
 export default function Timeline(): JSX.Element {
   const { address, isConnected } = useAccount();
-  const { posts, isLoading, sponsoredPosts, fetchPosts, estimateFeeForNewPost, estimateSponsorshipFee, submitPost, sponsorPost } = useAppContext();
   const { data: balance } = useBalance({ address });
   const { showPostForm, setShowPostForm } = useOutletContext<OutletContextType>();
+  const { posts, isLoading, sponsoredPosts, clearPosts, fetchPosts, estimateFeeForNewPost, estimateSponsorshipFee, submitPost, sponsorPost, searchPostsByAuthor } = useAppContext();
 
   const [ shouldLoadPosts, setShouldLoadPosts ] = useState<boolean>(true);
   const [ isPostFormEnabled, setIsPostFormEnabled ] = useState<boolean>(false);
-  const [ isDonationFormEnabled, setIsDonationFormEnabled ] = useState<boolean>(false);
-  const [ showPostFormSpinner, setShowPostFormSpinner ] = useState<boolean>(false);
-  const [ showDonationFormSpinner, setShowDonationFormSpinner ] = useState<boolean>(false);
   const [ activePost, setActivePost ] = useState<PostStruct|null>(null);
+  const [ showPostFormSpinner, setShowPostFormSpinner ] = useState<boolean>(false);
+  const [ isDonationFormEnabled, setIsDonationFormEnabled ] = useState<boolean>(false);
+  const [ isInfinityScrollEnabled, setIsInfinityScrollEnabled ] = useState<boolean>(true);
+  const [ showDonationFormSpinner, setShowDonationFormSpinner ] = useState<boolean>(false);
 
   const handleScroll = useMemo(() => debounce((e: Event) => {
-    const offset = 200;
-    if (!shouldLoadPosts && (window.innerHeight + window.scrollY) >= document.body.scrollHeight - offset) {
-      e.preventDefault();
-      setShouldLoadPosts(true);
+    if (isInfinityScrollEnabled) {
+      const offset = 200;
+      if (!shouldLoadPosts && (window.innerHeight + window.scrollY) >= document.body.scrollHeight - offset) {
+        e.preventDefault();
+        setShouldLoadPosts(true);
+      }
     }
-  }, 50), [shouldLoadPosts]);
+  }, 50), [isInfinityScrollEnabled, shouldLoadPosts]);
 
   useEffect(() => {
     if (shouldLoadPosts) handleFetchNewPosts();
@@ -92,10 +95,21 @@ export default function Timeline(): JSX.Element {
 
   const canSponsorPost = (post: PostStruct): boolean => post?.owner !== address && sponsoredPosts.indexOf(post?.id) < 0;
 
+  const handleSearch = async (value: string): Promise<void> => {
+    clearPosts();
+    if (value.length > 0) {
+      setIsInfinityScrollEnabled(false);
+      await searchPostsByAuthor(value)
+    } else {
+      await fetchPosts();
+      setIsInfinityScrollEnabled(true);
+    }
+  }
+
   return (
     <>
       <div className="flex flex-col gap-12 px-2">
-        <Search />
+        <Search onSearch={handleSearch} />
         {isConnected && <PostForm author={address}
                                   onSubmit={handlePostFormSubmit}
                                   onChange={handlePostFormChange}
@@ -105,7 +119,7 @@ export default function Timeline(): JSX.Element {
           <h2 className="font-medium leading-6 text-xl mb-6">Feed</h2>
           <div className="flex flex-col gap-3">
             {posts
-              .map( (post, i) => (
+              .map( (post: PostStruct, i: number) => (
                 <Post key={i}
                       post={post}
                       actionsDisabled={!canSponsorPost(post)}

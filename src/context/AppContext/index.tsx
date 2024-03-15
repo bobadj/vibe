@@ -4,7 +4,7 @@ import { useAccount, useChainId } from "wagmi";
 import { getEthersSigner, ZERO_ADDRESS } from '../../utils';
 import { BigNumber, ethers, PayableOverrides } from "ethers";
 import { Context, createContext, JSX, useEffect, useState } from "react";
-import { ISocialNetwork, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
+import { ISocialNetwork, PostCreatedEvent, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
 
 import type { PostStruct } from "../../utils/types";
 
@@ -12,11 +12,13 @@ interface AppContextValue {
   posts: PostStruct[]
   sponsoredPosts: number[]
   isLoading: boolean
+  clearPosts: () => void
   fetchPosts: (limit?: number) => Promise<void>
   estimateFeeForNewPost: (value: string) => Promise<string|number>
   estimateSponsorshipFee: (post: PostStruct, donationAmount: number) => Promise<string|number>
   submitPost: (content: string) => Promise<void>
   sponsorPost: (post: PostStruct, donationAmount: number) => Promise<void>
+  searchPostsByAuthor: (author: string) => Promise<void>
 }
 
 export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
@@ -46,6 +48,8 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     }
     return lastPostId;
   };
+
+  const clearPosts = () => setPosts([]);
   
   const fetchPosts = async (loadLimit: number = 5): Promise<void> => {
     if (contract && !isLoading) {
@@ -70,7 +74,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
         setTimeout(() => setIsLoading(false), 50);
       }
     }
-  }
+  };
 
   const getValidPosts = (): PostStruct[] => posts.filter( (post) => post?.owner !== ZERO_ADDRESS ); // check for deleted posts
 
@@ -80,7 +84,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
       return ethers.utils.formatUnits(estimatedFee, 'ether');
     }
     return 0;
-  }
+  };
 
   const submitPost = async (content: string): Promise<void> => {
     const signer = await getEthersSigner();
@@ -92,7 +96,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
       const post = await contract?.getPost(latestPostId);
       if (post) setPosts([{...post, id: latestPostId}, ...posts]);
     }
-  }
+  };
 
   const estimateSponsorshipFee = async (post: PostStruct, donationAmount: number): Promise<string|number> => {
     const donationAmountInEther = ethers.utils.parseEther(String(donationAmount));
@@ -104,7 +108,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
       return ethers.utils.formatUnits(estimatedFee, 'ether');
     }
     return 0;
-  }
+  };
 
   const sponsorPost = async (post: PostStruct, donationAmount: number): Promise<void> => {
     const signer = await getEthersSigner();
@@ -119,7 +123,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
       const signerAddress = await signer.getAddress();
       await getSponsoredPostsForAddress(signerAddress);
     }
-  }
+  };
 
   const getSponsoredPostsForAddress = async (address: string): Promise<void> => {
     let events: PostSponsoredEvent[] = [];
@@ -130,7 +134,38 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     }
     const postIds: Array<number> = events?.map( (ev: PostSponsoredEvent) => BigNumber.from(ev.args[0] || '0').toNumber());
     setSponsoredPosts(postIds);
-  }
+  };
+
+  const searchPostsByAuthor = async (author: string): Promise<void> => {
+    if (author.length > 0) {
+      setIsLoading(true);
+
+      const events: PostCreatedEvent[] = await contract?.queryFilter(
+        contract?.filters.PostCreated()
+      ) || [];
+
+      let authorPosts: PostStruct[] = await Promise.all(
+        events
+          .filter( (ev: PostCreatedEvent) => ev.args.owner.includes(author) )
+          .sort((x: PostCreatedEvent, y: PostCreatedEvent) => y.args.postID.toNumber() - x.args.postID.toNumber() )
+          .map( async (ev: PostCreatedEvent) => {
+            try {
+              return {
+                ...await contract?.getPost(ev?.args?.postID.toNumber()),
+                id: ev?.args.postID.toNumber()
+              } as PostStruct
+            } catch (e) {
+              console.error(`Error has occurred while fetch post with id: ${ev?.args?.postID.toNumber()}`)
+              return {} as PostStruct
+            }
+          })
+      );
+      authorPosts = authorPosts.filter( (post) => post?.owner );
+
+      setPosts(authorPosts);
+      setIsLoading(false);
+    }
+  };
 
   const contextValue: AppContextValue = {
     posts: getValidPosts(),
@@ -140,7 +175,9 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     estimateFeeForNewPost,
     estimateSponsorshipFee,
     submitPost,
-    sponsorPost
+    sponsorPost,
+    searchPostsByAuthor,
+    clearPosts
   }
   
   return (
