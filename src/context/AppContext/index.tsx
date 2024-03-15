@@ -6,19 +6,17 @@ import { BigNumber, ethers, PayableOverrides } from "ethers";
 import { Context, createContext, JSX, useEffect, useState } from "react";
 import { ISocialNetwork, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
 
+import type { PostStruct } from "../../utils/types";
+
 interface AppContextValue {
   posts: PostStruct[]
   sponsoredPosts: number[]
   isLoading: boolean
   fetchPosts: (limit?: number) => Promise<void>
   estimateFeeForNewPost: (value: string) => Promise<string|number>
-  estimateSponsorshipFee: (postId: number, donationAmount: number) => Promise<string|number>
+  estimateSponsorshipFee: (post: PostStruct, donationAmount: number) => Promise<string|number>
   submitPost: (content: string) => Promise<void>
-  sponsorPost: (postId: number, donationAmount: number) => Promise<void>
-}
-
-export interface PostStruct extends ISocialNetwork.PostStruct {
-  id: number
+  sponsorPost: (post: PostStruct, donationAmount: number) => Promise<void>
 }
 
 export const AppContext: Context<AppContextValue> = createContext({} as AppContextValue);
@@ -74,7 +72,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     }
   }
 
-  const getValidPosts = () => posts.filter( (post) => post?.owner !== ZERO_ADDRESS ); // check for deleted posts
+  const getValidPosts = (): PostStruct[] => posts.filter( (post) => post?.owner !== ZERO_ADDRESS ); // check for deleted posts
 
   const estimateFeeForNewPost = async (value: string): Promise<string|number> => {
     const estimatedFee = await contract?.estimateGas?.createPost(value);
@@ -96,26 +94,26 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     }
   }
 
-  const estimateSponsorshipFee = async (postId: number, donationAmount: number): Promise<string|number> => {
+  const estimateSponsorshipFee = async (post: PostStruct, donationAmount: number): Promise<string|number> => {
     const donationAmountInEther = ethers.utils.parseEther(String(donationAmount));
     const overrideOptions: PayableOverrides = {
       value: donationAmountInEther
     };
-    const estimatedFee = await contract?.estimateGas.sponsorPost(postId, overrideOptions);
+    const estimatedFee = await contract?.estimateGas.sponsorPost(post.id, overrideOptions);
     if (estimatedFee) {
       return ethers.utils.formatUnits(estimatedFee, 'ether');
     }
     return 0;
   }
 
-  const sponsorPost = async (postId: number, donationAmount: number): Promise<void> => {
+  const sponsorPost = async (post: PostStruct, donationAmount: number): Promise<void> => {
     const signer = await getEthersSigner();
     const connectedContract = contract?.connect(signer);
     const donationAmountInEther = ethers.utils.parseEther(String(donationAmount));
     const overrideOptions: PayableOverrides = {
       value: donationAmountInEther
     };
-    const transaction = await connectedContract?.sponsorPost(postId, overrideOptions);
+    const transaction = await connectedContract?.sponsorPost(post.id, overrideOptions);
     if (transaction) {
       await transaction.wait(1);
       const signerAddress = await signer.getAddress();

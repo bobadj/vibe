@@ -1,20 +1,21 @@
 import { JSX } from "react";
 import { useEnsName } from "wagmi";
 import { Avatar, Card } from "../../components";
-import { PostStruct } from "../../context/AppContext";
+
+import type { PostActionType, PostStruct } from "../../utils/types";
 
 import PostHeader from "./PostHeader";
 import PostContent from "./PostContent";
-import PostAction, { PostActionType } from "./PostAction";
+import PostAction from "./PostAction";
 
 interface PostProps {
   post: PostStruct,
   actionsDisabled?: boolean
-  onAction: (id: number, action: PostActionType) => any
+  onAction: (post: PostStruct, action: PostActionType) => any
 }
 
 export default function Post({ post, actionsDisabled = false, onAction }: PostProps): JSX.Element {
-  const { id, text, timestamp, owner } = post;
+  const { text, timestamp, owner } = post;
   const { data: ensName } = useEnsName({ address: owner as any });
   
   return (
@@ -24,7 +25,7 @@ export default function Post({ post, actionsDisabled = false, onAction }: PostPr
         <PostHeader author={ensName || owner} timestamp={timestamp} />
         <PostContent content={text} />
         <PostAction disabled={actionsDisabled}
-                    handleAction={(action) => onAction(id, action)} />
+                    handleAction={(action) => onAction(post, action)} />
       </div>
     </Card>
   )

@@ -2,22 +2,24 @@ import { ethers } from "ethers";
 import { debounce } from "../../utils";
 import { useAppContext } from "../../hook";
 import { useAccount, useBalance } from "wagmi";
+import { useOutletContext } from "react-router-dom";
 import { JSX, useEffect, useMemo, useState } from "react";
 import { PostForm, Search, Post, Loader, Modal, DonationForm } from "../../components";
-import type { PostActionType } from "../../components/Post";
-import { PostStruct } from "../../context/AppContext";
+
+import type { OutletContextType, PostActionType, PostStruct } from "../../utils/types";
 
 export default function Timeline(): JSX.Element {
   const { address, isConnected } = useAccount();
   const { posts, isLoading, sponsoredPosts, fetchPosts, estimateFeeForNewPost, estimateSponsorshipFee, submitPost, sponsorPost } = useAppContext();
   const { data: balance } = useBalance({ address });
-  
+  const { showPostForm, setShowPostForm } = useOutletContext<OutletContextType>();
+
   const [ shouldLoadPosts, setShouldLoadPosts ] = useState<boolean>(true);
   const [ isPostFormEnabled, setIsPostFormEnabled ] = useState<boolean>(false);
   const [ isDonationFormEnabled, setIsDonationFormEnabled ] = useState<boolean>(false);
   const [ showPostFormSpinner, setShowPostFormSpinner ] = useState<boolean>(false);
   const [ showDonationFormSpinner, setShowDonationFormSpinner ] = useState<boolean>(false);
-  const [ activePost, setActivePost ] = useState<number|null>(null);
+  const [ activePost, setActivePost ] = useState<PostStruct|null>(null);
 
   const handleScroll = useMemo(() => debounce((e: Event) => {
     const offset = 200;
@@ -39,12 +41,12 @@ export default function Timeline(): JSX.Element {
     }
   }, [handleScroll]);
   
-  const handleFetchNewPosts = async (postsToLoad: number = 5) => {
+  const handleFetchNewPosts = async (postsToLoad: number = 5): Promise<void> => {
     await fetchPosts(postsToLoad);
     setShouldLoadPosts(false);
   };
 
-  const handlePostFormChange = async (value: string) => {
+  const handlePostFormChange = async (value: string): Promise<void> => {
     setIsPostFormEnabled(false);
     setShowPostFormSpinner(true);
     const usersBalance = ethers.utils.formatUnits(balance?.value || 0, 'ether');
@@ -53,7 +55,7 @@ export default function Timeline(): JSX.Element {
     setShowPostFormSpinner(false);
   };
 
-  const handlePostFormSubmit = async (value: string) => {
+  const handlePostFormSubmit = async (value: string): Promise<void> => {
     setShowPostFormSpinner(true);
     await submitPost(value);
     setShowPostFormSpinner(false);
@@ -70,7 +72,7 @@ export default function Timeline(): JSX.Element {
     setShowDonationFormSpinner(false);
   }
 
-  const handleDonationFormSubmit = async (value: string) => {
+  const handleDonationFormSubmit = async (value: string): Promise<void> => {
     if (activePost) {
       setIsDonationFormEnabled(false); // disable form while submitting
       setShowDonationFormSpinner(true); // show spinner
@@ -83,11 +85,11 @@ export default function Timeline(): JSX.Element {
     }
   };
   
-  const postActionHandler = (postId: number, action: PostActionType) => {
-    if (action === "sponsor") setActivePost(postId);
+  const postActionHandler = (post: PostStruct, action: PostActionType): void => {
+    if (action === "sponsor" && post) setActivePost(post);
   };
 
-  const canSponsorPost = (post: PostStruct) => post?.owner !== address && sponsoredPosts.indexOf(post?.id) < 0;
+  const canSponsorPost = (post: PostStruct): boolean => post?.owner !== address && sponsoredPosts.indexOf(post?.id) < 0;
 
   return (
     <>
@@ -118,6 +120,16 @@ export default function Timeline(): JSX.Element {
                         onSubmit={handleDonationFormSubmit}
                         showSpinner={showDonationFormSpinner}
                         disabled={!isDonationFormEnabled || showDonationFormSpinner}/>
+        </Modal>
+      )}
+      {isConnected && (
+        <Modal open={showPostForm} onClose={() => setShowPostForm(false)}>
+          <PostForm author={address}
+                    hideTitle
+                    onSubmit={handlePostFormSubmit}
+                    onChange={handlePostFormChange}
+                    showSpinner={showPostFormSpinner}
+                    disabled={!isPostFormEnabled || showPostFormSpinner} />
         </Modal>
       )}
     </>

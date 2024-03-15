@@ -1,9 +1,9 @@
 import { JSX } from "react";
 
+import type { PostActionType } from "../../../utils/types";
+
 import coins from "./assets/coins.svg";
 import share from "./assets/share.svg";
-
-export type PostActionType = "sponsor"|"share";
 
 interface PostActionProps {
   handleAction: (action: PostActionType) => any

@@ -1,10 +1,13 @@
-import { JSX } from "react";
+import { JSX, useState } from "react";
 import { formatAddress } from "../../utils";
 import { useAccount, useEnsName } from "wagmi";
-import {Outlet, useNavigate, useRouteError} from "react-router-dom";
 import { useIsCurrentChainSupported } from "../../hook";
 import { CONNECT_WALLET_PATH } from "../../utils/router";
+import { Outlet, useNavigate, useRouteError } from "react-router-dom";
 import { Card, Button, NetworkError, PageError } from "../../components";
+
+import type { OutletContextType } from "../../utils/types";
+
 import logoIndigo from './../../assets/logo_indigo.svg';
 
 export default function PageLayout(): JSX.Element {
@@ -12,6 +15,8 @@ export default function PageLayout(): JSX.Element {
   const error = useRouteError() as { status: string|number, statusText: string };
   const { isConnected, address } = useAccount();
   const isChainSupported = useIsCurrentChainSupported();
+
+  const [ showPostForm, setShowPostForm ] = useState<boolean>();
   
   const { data: ensName } = useEnsName({ address });
 
@@ -21,7 +26,11 @@ export default function PageLayout(): JSX.Element {
         <div className="sidebar">
           <Card>
             <img src={logoIndigo} alt="" className="w-[50px] h-auto" />
-            <Button className="mt-[150px]" disabled={!isConnected || !isChainSupported}>Write A Post</Button>
+            <Button className="mt-[150px]"
+                    onClick={() => setShowPostForm(true)}
+                    disabled={!isConnected || !isChainSupported || !!error}>
+              Write A Post
+            </Button>
           </Card>
         </div>
         <Card className="container h-fit">
@@ -30,12 +39,19 @@ export default function PageLayout(): JSX.Element {
               ?
               <PageError status={error?.status} content={error?.statusText} />
               :
-              isChainSupported ? <Outlet /> : <NetworkError />
+              isChainSupported
+                ?
+                <Outlet context={{ showPostForm, setShowPostForm } as OutletContextType} />
+                :
+                <NetworkError />
           }
         </Card>
         <div className="sidebar">
           <Card>
-            <Button className="!opacity-100" classType="secondary" disabled={isConnected} onClick={() => navigate(CONNECT_WALLET_PATH)}>
+            <Button className="!opacity-100"
+                    classType="secondary"
+                    disabled={isConnected}
+                    onClick={() => navigate(CONNECT_WALLET_PATH)}>
               {(ensName || address) ? ensName || formatAddress(address) : 'Connect wallet'}
             </Button>
           </Card>
