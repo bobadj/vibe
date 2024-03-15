@@ -5,14 +5,15 @@ import { PostStruct } from "../../context/AppContext";
 
 import PostHeader from "./PostHeader";
 import PostContent from "./PostContent";
-import PostAction from "./PostAction";
+import PostAction, { PostActionType } from "./PostAction";
 
 interface PostProps {
   post: PostStruct,
-  onAction: (id: number, action: "sponsor"|"share") => any
+  actionsDisabled?: boolean
+  onAction: (id: number, action: PostActionType) => any
 }
 
-export default function Post({ post, onAction }: PostProps): JSX.Element {
+export default function Post({ post, actionsDisabled = false, onAction }: PostProps): JSX.Element {
   const { id, text, timestamp, owner } = post;
   const { data: ensName } = useEnsName({ address: owner as any });
   
@@ -22,8 +23,13 @@ export default function Post({ post, onAction }: PostProps): JSX.Element {
       <div className="flex flex-col gap-3">
         <PostHeader author={ensName || owner} timestamp={timestamp} />
         <PostContent content={text} />
-        <PostAction handleAction={(action) => onAction(id, action)} />
+        <PostAction disabled={actionsDisabled}
+                    handleAction={(action) => onAction(id, action)} />
       </div>
     </Card>
   )
+}
+
+export type {
+  PostActionType
 }
