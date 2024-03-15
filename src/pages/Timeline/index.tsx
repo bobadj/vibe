@@ -3,7 +3,7 @@ import { debounce } from "../../utils";
 import { useAppContext } from "../../hook";
 import { useAccount, useBalance } from "wagmi";
 import { JSX, useEffect, useMemo, useState } from "react";
-import { PostForm, Search, Post, Loading, Modal, DonationForm } from "../../components";
+import { PostForm, Search, Post, Loader, Modal, DonationForm } from "../../components";
 import type { PostActionType } from "../../components/Post";
 import { PostStruct } from "../../context/AppContext";
 
@@ -108,7 +108,7 @@ export default function Timeline(): JSX.Element {
                       actionsDisabled={!canSponsorPost(post)}
                       onAction={postActionHandler} />
               ))}
-            <Loading visible={isLoading} />
+            <Loader visible={isLoading} />
           </div>
         </div>
       </div>

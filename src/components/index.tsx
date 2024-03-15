@@ -6,7 +6,7 @@ import Avatar from "./Avatar";
 import Textarea from "./Textarea";
 import Post from "./Post";
 import NetworkError from "./NetworkError";
-import Loading from "./Loading";
+import Loader from "./Loader";
 import Preview from "./Preview";
 import PageError from "./PageError";
 import Modal from "./Modal";
@@ -21,7 +21,7 @@ export {
   Textarea,
   Post,
   NetworkError,
-  Loading,
+  Loader,
   Preview,
   PageError,
   Modal,

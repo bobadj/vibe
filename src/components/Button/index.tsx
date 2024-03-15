@@ -1,5 +1,5 @@
 import { JSX, MouseEventHandler } from "react";
-import Loading from "../Loading";
+import Loader from "../Loader";
 
 interface ButtonProps {
   children: string|JSX.Element,
@@ -27,7 +27,7 @@ export default function Button({ children, className, classType = 'primary', dis
             disabled={disabled}
             type={type}
             onClick={onClick}>
-      <Loading visible={loading} spinner />
+      <Loader.Spinner visible={loading} />
       {children}
     </button>
   )
