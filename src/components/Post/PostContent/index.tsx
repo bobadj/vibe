@@ -7,12 +7,14 @@ interface PostContentProps {
 }
 
 export default function PostContent({ content }: PostContentProps): JSX.Element {
-  const [ previewSource, setPreviewSource ] = useState<string|undefined>()
+  const [ previewSource, setPreviewSource ] = useState<string|undefined|null>(null);
 
   useEffect(() => {
     const URIs = (content || '').match(/(https?:\/\/[^ ]*)/g);
     if (URIs && (URIs || []).length > 0 && isValidURL(URIs[0])) {
       setPreviewSource(URIs[0]);
+    } else {
+      setPreviewSource(null);
     }
   }, [content]);
 

@@ -59,6 +59,7 @@ export default function Timeline(): JSX.Element {
     setShowPostFormSpinner(true);
     await submitPost(value);
     setShowPostFormSpinner(false);
+    setShowPostForm(false)
   };
 
   const handleDonationFormChange = async (value: string): Promise<void> => {
@@ -98,7 +99,7 @@ export default function Timeline(): JSX.Element {
         {isConnected && <PostForm author={address}
                                   onSubmit={handlePostFormSubmit}
                                   onChange={handlePostFormChange}
-                                  showSpinner={showPostFormSpinner}
+                                  showSpinner={!showPostForm && showPostFormSpinner}
                                   disabled={!isPostFormEnabled || showPostFormSpinner} />}
         <div>
           <h2 className="font-medium leading-6 text-xl mb-6">Feed</h2>
