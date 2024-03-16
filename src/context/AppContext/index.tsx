@@ -4,7 +4,7 @@ import { useAccount, useChainId } from "wagmi";
 import { getEthersSigner, ZERO_ADDRESS } from '../../utils';
 import { BigNumber, ethers, PayableOverrides } from "ethers";
 import { Context, createContext, JSX, useEffect, useState } from "react";
-import { ISocialNetwork, PostCreatedEvent, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
+import { ISocialNetwork, PostCreatedEvent, PostDeletedEvent, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
 
 import type { PostStruct } from "../../utils/types";
 
@@ -137,33 +137,38 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   };
 
   const searchPostsByAuthor = async (author: string): Promise<void> => {
+    clearPosts();
     if (author.length > 0) {
       setIsLoading(true);
 
       const events: PostCreatedEvent[] = await contract?.queryFilter(
         contract?.filters.PostCreated()
       ) || [];
-
+      
+      const deleteEvents: PostDeletedEvent[] = await contract?.queryFilter(
+        contract?.filters.PostDeleted()
+      ) || [];
+      const deletedPostIds: number[] = deleteEvents.map( (ev: PostDeletedEvent) => ev?.args?.postID.toNumber() );
+      
       let authorPosts: PostStruct[] = await Promise.all(
         events
-          .filter( (ev: PostCreatedEvent) => ev.args.owner.includes(author) )
+          .filter( (ev: PostCreatedEvent) => ev.args.owner === author )
           .sort((x: PostCreatedEvent, y: PostCreatedEvent) => y.args.postID.toNumber() - x.args.postID.toNumber() )
           .map( async (ev: PostCreatedEvent) => {
-            try {
-              return {
-                ...await contract?.getPost(ev?.args?.postID.toNumber()),
-                id: ev?.args.postID.toNumber()
-              } as PostStruct
-            } catch (e) {
-              console.error(`Error has occurred while fetch post with id: ${ev?.args?.postID.toNumber()}`)
-              return {} as PostStruct
+            const txBlock = await ev.getBlock();
+            return {
+              id: ev?.args.postID.toNumber(),
+              text: ev?.args.text,
+              owner: ev?.args.owner,
+              timestamp: txBlock.timestamp
             }
           })
       );
-      authorPosts = authorPosts.filter( (post) => post?.owner );
+      authorPosts = authorPosts.filter( (post) => deletedPostIds.indexOf(post.id) < 0 );
 
       setPosts(authorPosts);
-      setIsLoading(false);
+      // lets delay loading a bit
+      setTimeout(() => setIsLoading(false), 50);
     }
   };
 

@@ -1,7 +1,8 @@
 import { JSX, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../../hooks";
 import { Form, Input } from "../../components";
-import { PROFILE_PAGE } from "../../utils/router";
+import { FEED_PATH, PROFILE_PAGE } from "../../utils/router";
 
 import searchIcon from "./assets/search.svg";
 
@@ -11,11 +12,17 @@ interface SearchProps {
 
 export default function Search({ value }: SearchProps): JSX.Element {
   const navigate = useNavigate();
-  const [ searchValue, setSearchValue ] = useState<string|undefined>(value);
+  const [ searchValue, setSearchValue ] = useState<string|undefined>();
+  
+  const { clearPosts } = useAppContext();
   
   const handleSubmit = () => {
-    if (searchValue && searchValue.length > 0)
+    clearPosts();
+    if (searchValue && searchValue.length > 0) {
       navigate(PROFILE_PAGE.replace(":address", searchValue));
+    } else {
+      navigate(FEED_PATH);
+    }
   }
   
   return (
@@ -24,7 +31,7 @@ export default function Search({ value }: SearchProps): JSX.Element {
       <Input className="w-full py-5 outline-0 outline-none bg-transparent font-normal text-stone-600"
              type="text"
              onChange={setSearchValue}
-             value={searchValue}
+             value={value}
       />
       <img src={searchIcon} alt="search" className="max-w-[20px]" />
     </Form>

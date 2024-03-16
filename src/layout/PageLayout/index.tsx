@@ -1,11 +1,11 @@
 import { JSX, useState } from "react";
 import { formatAddress } from "../../utils";
-import { useAccount, useEnsName } from "wagmi";
-import { useIsCurrentChainSupported } from "../../hooks";
-import { CONNECT_WALLET_PATH } from "../../utils/router";
-import { Outlet, useNavigate, useRouteError } from "react-router-dom";
-import { Card, Button, PageError } from "../../components";
 import { NetworkError } from "../../features";
+import { useAccount, useEnsName } from "wagmi";
+import { CONNECT_WALLET_PATH } from "../../utils/router";
+import { useIsCurrentChainSupported } from "../../hooks";
+import { Card, Button, PageError } from "../../components";
+import { Outlet, useNavigate, useRouteError } from "react-router-dom";
 
 import type { OutletContextType } from "../../utils/types";
 
