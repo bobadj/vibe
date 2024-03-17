@@ -9,7 +9,7 @@ export default function Feed(): JSX.Element {
   const { fetchPosts } = useAppContext();
   
   const handleScroll = useMemo(() => debounce((e: Event) => {
-      const offset = 200;
+      const offset = 300;
       if (!shouldLoadPosts && (window.innerHeight + window.scrollY) >= document.body.scrollHeight - offset) {
         e.preventDefault();
         setShouldLoadPosts(true);

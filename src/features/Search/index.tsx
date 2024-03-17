@@ -32,6 +32,7 @@ export default function Search({ value }: SearchProps): JSX.Element {
              type="text"
              onChange={setSearchValue}
              value={value}
+             placeholder="Search..."
       />
       <img src={searchIcon} alt="search" className="max-w-[20px]" />
     </Form>
