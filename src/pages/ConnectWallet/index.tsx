@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import logo from './../../assets/logo_white.svg';
 
 export default function ConnectWallet(): JSX.Element {
-  const { address, chainId} = useAccount();
+  const { address, chainId } = useAccount();
   const navigate = useNavigate();
   
   useEffect( () => {
