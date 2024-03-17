@@ -1,5 +1,5 @@
 import { FC, JSX, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../../hooks";
 import { Form, Input } from "../../components";
 import { FEED_PATH, PROFILE_PAGE } from "../../router";
@@ -13,16 +13,20 @@ interface SearchProps {
 
 const Search: FC<SearchProps> = ({ value }: SearchProps): JSX.Element => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [ searchValue, setSearchValue ] = useState<string|undefined>();
   
   const { clearPosts } = useAppContext();
   
   const handleSubmit = () => {
-    clearPosts();
     if (searchValue && searchValue.length > 0) {
       navigate(PROFILE_PAGE.replace(":address", searchValue));
-    } else {
-      navigate(FEED_PATH);
+    }
+    else {
+      if (pathname !== FEED_PATH) {
+        clearPosts();
+        navigate(FEED_PATH);
+      }
     }
   }
   

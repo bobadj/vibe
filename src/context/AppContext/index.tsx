@@ -4,7 +4,12 @@ import { useAccount, useChainId } from "wagmi";
 import { getEthersSigner } from '../../utils';
 import { BigNumber, ethers, PayableOverrides } from "ethers";
 import { Context, createContext, JSX, useEffect, useState } from "react";
-import { ISocialNetwork, PostCreatedEvent, PostDeletedEvent, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
+import {
+  ISocialNetwork,
+  PostCreatedEvent,
+  PostDeletedEvent,
+  PostSponsoredEvent
+} from "../../../abis/types/VibeAbi.ts";
 
 import { PostStruct, ZERO_ADDRESS } from "../../types";
 
