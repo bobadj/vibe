@@ -20,6 +20,7 @@ const DonationForm: FC<DonationFormProps> = ({ post, onSubmit }: DonationFormPro
   
   const [ amount, setAmount ] = useState<string|null>(null);
   const [ isFormEnabled, setIsFormEnabled ] = useState<boolean>(true);
+  const [ hasEnoughFunds, setHasEnoughFunds ] = useState<boolean>(true);
   const [ showSpinner, setShowSpinner ] = useState<boolean>(false);
   
   const handleSubmit = async (e: FormEvent) => {
@@ -39,26 +40,32 @@ const DonationForm: FC<DonationFormProps> = ({ post, onSubmit }: DonationFormPro
     setAmount(value);
     setIsFormEnabled(false);
     setShowSpinner(true);
+    setHasEnoughFunds(true);
     if (value.length > 0 && +value > 0) {
       const usersBalance = ethers.utils.formatUnits(balance?.value || 0, 'ether');
       const estimatedGas = await estimateSponsorshipFee(post, +value);
-      setIsFormEnabled(+usersBalance > (+estimatedGas + +value));
+      const canProceed = +usersBalance > (+estimatedGas + +value);
+      setIsFormEnabled(canProceed);
+      setHasEnoughFunds(canProceed);
     }
     setShowSpinner(false);
   };
   
   return (
     <Form onSubmit={handleSubmit}>
-      <div className="flex flex-row justify-between gap-4">
-        <Input onChange={handleChange}
-               type={InputType.text}
-               placeholder="Enter amount of ETH you want to donate..." />
-        <Button type={ButtonTypes.button}
-                loading={showSpinner}
-                disabled={!isFormEnabled || showSpinner || +(amount || 0) <= 0}>
-          DONATE
-        </Button>
-      </div>
+      <>
+        <div className="flex flex-row justify-between gap-4">
+          <Input onChange={handleChange}
+                 type={InputType.text}
+                 placeholder="Enter amount of ETH you want to donate..." />
+          <Button type={ButtonTypes.button}
+                  loading={showSpinner}
+                  disabled={!isFormEnabled || showSpinner || +(amount || 0) <= 0}>
+            DONATE
+          </Button>
+        </div>
+        {!hasEnoughFunds && <p className="text-red text-sm italic">There is not enough balance</p>}
+      </>
     </Form>
   )
 }
