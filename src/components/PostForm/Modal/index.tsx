@@ -1,16 +1,16 @@
-import { JSX } from "react";
+import { FC, JSX } from "react";
 import { useAccount } from "wagmi";
 import { useOutletContext } from "react-router-dom";
-import { Modal as UIModal } from '../../../components';
-import PostForm from "../index.tsx";
+import { default as UIModal } from "../../Modal";
+import PostForm from "../../PostForm"
 
-import type { OutletContextType } from "../../../utils/types";
+import type { OutletContextType } from "../../../types";
 
 interface ModalProps {
   onSubmit?: () => void
 }
 
-export default function Modal({ onSubmit }: ModalProps): JSX.Element|null {
+const Modal: FC<ModalProps> = ({ onSubmit }: ModalProps): JSX.Element|null => {
   const { isConnected } = useAccount();
   const { showPostForm, setShowPostForm } = useOutletContext<OutletContextType>();
   
@@ -28,3 +28,5 @@ export default function Modal({ onSubmit }: ModalProps): JSX.Element|null {
     </UIModal>
   )
 }
+
+export default Modal;

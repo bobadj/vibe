@@ -1,9 +1,9 @@
 import { debounce } from "../../utils";
 import { useAppContext } from "../../hooks";
-import { JSX, useEffect, useMemo, useState } from "react";
-import { PostForm, Search, PostList } from "../../features";
+import { FC, JSX, useEffect, useMemo, useState } from "react";
+import { PostForm, Search, PostList } from "../../components";
 
-export default function Feed(): JSX.Element {
+const Feed: FC = (): JSX.Element => {
   const [ shouldLoadPosts, setShouldLoadPosts ] = useState<boolean>(true);
   
   const { fetchPosts } = useAppContext();
@@ -42,3 +42,5 @@ export default function Feed(): JSX.Element {
     </div>
   )
 }
+
+export default Feed;

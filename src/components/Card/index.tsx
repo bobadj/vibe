@@ -1,14 +1,17 @@
-import { JSX } from "react";
+import { FC, JSX } from "react";
+import classNames from "classnames";
 
 interface CardProps {
   children: JSX.Element|JSX.Element[],
   className?: string
 }
 
-export default function Card({ children, className }: CardProps): JSX.Element {
+const Card: FC<CardProps> = ({ children, className }): JSX.Element => {
   return (
-    <div className={`bg-card shadow-sm rounded-[25px] px-3 py-5 border-solid border-[16px] border-gray ${className || ''}`}>
+    <div className={classNames("bg-card shadow-sm rounded-[25px] px-3 py-5 border-solid border-[16px] border-gray", className)}>
       {children}
     </div>
   )
 }
+
+export default Card;

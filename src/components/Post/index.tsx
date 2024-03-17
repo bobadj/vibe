@@ -1,10 +1,14 @@
-import { JSX, useState } from "react";
+import { FC, JSX, useState } from "react";
 import { useAppContext } from "../../hooks";
 import { useAccount, useEnsName } from "wagmi";
-import { Avatar, Card, Modal } from "../../components";
+
+import Avatar from "../Avatar";
+import Card from "../Card";
+import Modal from "../Modal";
 import DonationForm from "../DonationForm";
 
-import type { PostActionType, PostStruct } from "../../utils/types";
+import {PostStruct} from "../../types";
+import {PostActionType} from "../../types/enum";
 
 import Header from "./Header";
 import Footer from "./Footer";
@@ -14,7 +18,7 @@ interface PostProps {
   post: PostStruct,
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+const Post: FC<PostProps> = ({ post }: PostProps): JSX.Element => {
   const { id, text, timestamp, owner } = post;
   
   const { sponsoredPosts } = useAppContext();
@@ -24,7 +28,7 @@ export default function Post({ post }: PostProps): JSX.Element {
   const [ sponsorModalVisible, setSponsorModalVisible ] = useState<boolean>(false);
   
   const handleAction = (action: PostActionType) => {
-    if (action === "sponsor") setSponsorModalVisible(true);
+    if (action === PostActionType.sponsor) setSponsorModalVisible(true);
   }
   
   const canSponsorPost = (): boolean => owner !== address && sponsoredPosts.indexOf(id) < 0;
@@ -47,3 +51,5 @@ export default function Post({ post }: PostProps): JSX.Element {
     </>
   )
 }
+
+export default Post;

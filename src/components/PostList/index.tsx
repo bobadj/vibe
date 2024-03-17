@@ -1,15 +1,15 @@
-import { JSX } from "react";
-import { Loader } from "../../components";
+import { FC, JSX } from "react";
 import { useAppContext } from "../../hooks";
+import Loader from '../Loader';
 import Post from '../Post';
 
-import type { PostStruct } from "../../utils/types";
+import type { PostStruct } from "../../types";
 
 interface PostListProps {
   title?: string
 }
 
-export default function PostList({ title }: PostListProps): JSX.Element {
+const PostList: FC<PostListProps> = ({ title }: PostListProps): JSX.Element => {
   const { posts, isLoading } = useAppContext();
   
   return (
@@ -27,3 +27,5 @@ export default function PostList({ title }: PostListProps): JSX.Element {
     </div>
   )
 }
+
+export default PostList;

@@ -1,17 +1,17 @@
-import { JSX, useState } from "react";
+import { FC, JSX, useState } from "react";
 import { formatAddress } from "../../utils";
-import { NetworkError } from "../../features";
 import { useAccount, useEnsName } from "wagmi";
-import { CONNECT_WALLET_PATH } from "../../utils/router";
+import { CONNECT_WALLET_PATH } from "../../router";
 import { useIsCurrentChainSupported } from "../../hooks";
-import { Card, Button, PageError } from "../../components";
 import { Outlet, useNavigate, useRouteError } from "react-router-dom";
+import { Button, Card, NetworkError, PageError } from "../../components";
 
-import type { OutletContextType } from "../../utils/types";
+import type { OutletContextType } from "../../types";
+import { ButtonClassTypes } from "../../types/enum";
 
 import logoIndigo from './../../assets/logo_indigo.svg';
 
-export default function PageLayout(): JSX.Element {
+const PageLayout: FC = (): JSX.Element => {
   const navigate = useNavigate();
   const error = useRouteError() as { status: string|number, statusText: string };
   const { isConnected, address } = useAccount();
@@ -50,7 +50,7 @@ export default function PageLayout(): JSX.Element {
         <div className="sidebar">
           <Card>
             <Button className="!opacity-100"
-                    classType="secondary"
+                    classType={ButtonClassTypes.secondary}
                     disabled={isConnected}
                     onClick={() => navigate(CONNECT_WALLET_PATH)}>
               {(ensName || address) ? ensName || formatAddress(address) : 'Connect wallet'}
@@ -61,3 +61,5 @@ export default function PageLayout(): JSX.Element {
     </div>
   )
 }
+
+export default PageLayout;

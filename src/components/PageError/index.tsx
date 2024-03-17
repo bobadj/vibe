@@ -1,11 +1,11 @@
-import { JSX } from "react";
+import { FC, JSX } from "react";
 
 interface PageErrorProps {
   status: number|string,
   content: string
 }
 
-export default function PageError({ status, content }: PageErrorProps): JSX.Element {
+const PageError: FC<PageErrorProps> = ({ status, content }): JSX.Element => {
   return (
     <div className="flex flex-col justify-center items-center py-9 text-slate-700">
       <h1 className="text-5xl font-bold my-9">OOOPS!</h1>
@@ -14,3 +14,5 @@ export default function PageError({ status, content }: PageErrorProps): JSX.Elem
     </div>
   )
 }
+
+export default PageError;

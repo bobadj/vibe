@@ -1,9 +1,9 @@
-import { JSX } from "react";
+import { FC, JSX } from "react";
 import { Chain } from "viem/chains";
-import { Button } from "../../components";
 import { useSwitchChain } from "wagmi";
+import Button from "../Button";
 
-export default function NetworkError(): JSX.Element {
+const NetworkError: FC = (): JSX.Element => {
   const { chains, switchChain } = useSwitchChain();
   
   const getSupportedNetworksName = () => chains
@@ -23,3 +23,5 @@ export default function NetworkError(): JSX.Element {
     </div>
   )
 }
+
+export default NetworkError;

@@ -1,5 +1,6 @@
 import { FC, JSX } from "react";
-import Spinner from "./Spinner";
+import Spinner from "./assets/spinner.svg?react";
+
 
 interface LoaderProps {
   visible: boolean,
@@ -7,18 +8,20 @@ interface LoaderProps {
   children?: JSX.Element|JSX.Element[]
 }
 
-type ILoader<T> = FC<T> & {
-  Spinner: typeof Spinner;
-}
-
-const Loader: ILoader<LoaderProps> = ({ visible, children, spinner }): JSX.Element => {
+const Loader: FC<LoaderProps> = ({ visible, children, spinner }): JSX.Element => {
   if (!visible) {
     return (
       <>{children}</>
     )
   }
 
-  if (spinner) return <Spinner visible={visible} />
+  if (spinner) {
+    return (
+      <span className="animate-spin -ml-1 mr-3 h-5 w-5 text-white">
+        <Spinner />
+      </span>
+    );
+  }
 
   return (
     <div className="flex gap-2 w-full justify-center">
@@ -29,5 +32,4 @@ const Loader: ILoader<LoaderProps> = ({ visible, children, spinner }): JSX.Eleme
   )
 }
 
-Loader.Spinner = Spinner;
 export default Loader;

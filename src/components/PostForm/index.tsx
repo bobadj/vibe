@@ -1,8 +1,14 @@
 import { ethers } from "ethers";
 import { useAppContext } from "../../hooks";
 import { useAccount, useBalance } from "wagmi";
+import { ButtonTypes } from "../../types/enum";
 import { FC, FormEvent, JSX, useState } from "react";
-import { Card, Button, Avatar, Textarea, Form } from "./../../components";
+
+import Avatar from "./../Avatar";
+import Button from "./../Button";
+import Card from "./../Card";
+import Form from "./../Form";
+import Textarea from "./../Textarea";
 import Modal from './Modal';
 
 interface PostFormProps {
@@ -63,7 +69,7 @@ const PostForm: IPostForm<PostFormProps> = ({ title, onSubmit, hideTitle = false
                       placeholder="How’s your Vibe today, 3327?" />
           </div>
           <div className="w-full flex justify-end">
-            <Button type="submit"
+            <Button type={ButtonTypes.submit}
                     loading={showSpinner}
                     disabled={!formEnabled || showSpinner || (postContent || '').length <= 0}>
               POST

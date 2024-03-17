@@ -1,6 +1,7 @@
-import { ChangeEvent, FormEvent, JSX, useMemo } from "react";
+import { ChangeEvent, FC, FormEvent, JSX, useMemo } from "react";
 import { debounce } from "../../utils";
-import type { CallbackFunction } from "../../utils/types";
+
+import type { CallbackFunction } from "../../types";
 
 interface FormProps {
   onChange?: CallbackFunction
@@ -9,7 +10,7 @@ interface FormProps {
   className?: string
 }
 
-export default function Form({ onChange, onSubmit, children, className }: FormProps): JSX.Element {
+const Form: FC<FormProps> = ({ onChange, onSubmit, children, className }): JSX.Element => {
   const handleOnChange = useMemo(() => debounce((ev: ChangeEvent) => {
     if (onChange) onChange(ev);
   }), [onChange]);
@@ -28,3 +29,5 @@ export default function Form({ onChange, onSubmit, children, className }: FormPr
     </form>
   )
 }
+
+export default Form;

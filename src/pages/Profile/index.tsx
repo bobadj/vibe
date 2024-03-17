@@ -1,13 +1,13 @@
 import { ethers } from "ethers";
-import { JSX, useEffect } from "react";
+import { FC, JSX, useEffect } from "react";
 import { getEnsAddress } from "@wagmi/core";
 import { useAppContext } from "../../hooks";
-import { wagmiConfig } from "../../utils/config";
-import { FEED_PATH } from "../../utils/router";
-import { Search, PostList, PostForm } from "../../features";
+import { wagmiConfig } from "../../config";
+import { FEED_PATH } from "../../router";
+import { Search, PostList, PostForm } from "../../components";
 import { Params, useNavigate, useParams } from "react-router-dom";
 
-export default function Profile(): JSX.Element {
+const Profile: FC = (): JSX.Element => {
   const { address } = useParams<Params>();
   const navigate = useNavigate();
   
@@ -43,3 +43,5 @@ export default function Profile(): JSX.Element {
     </div>
   )
 }
+
+export default Profile;

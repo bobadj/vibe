@@ -1,12 +1,12 @@
 import { useVibeContract } from "../../hooks";
 import { VibeAbi } from "../../../abis/types";
 import { useAccount, useChainId } from "wagmi";
-import { getEthersSigner, ZERO_ADDRESS } from '../../utils';
+import { getEthersSigner } from '../../utils';
 import { BigNumber, ethers, PayableOverrides } from "ethers";
 import { Context, createContext, JSX, useEffect, useState } from "react";
 import { ISocialNetwork, PostCreatedEvent, PostDeletedEvent, PostSponsoredEvent } from "../../../abis/types/VibeAbi.ts";
 
-import type { PostStruct } from "../../utils/types";
+import { PostStruct, ZERO_ADDRESS } from "../../types";
 
 interface AppContextValue {
   posts: PostStruct[]

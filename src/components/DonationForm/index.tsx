@@ -1,18 +1,18 @@
-import { ethers } from "ethers";
-import { FormEvent, JSX, useState } from "react";
+import { ethers} from "ethers";
+import { FC, FormEvent, JSX, useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { useAppContext } from "../../hooks";
 import { Button, Form, Input } from "../../components";
 
-import type { PostStruct } from "../../utils/types";
+import type { PostStruct } from "../../types";
+import { ButtonTypes, InputType } from "../../types/enum";
 
 interface DonationFormProps {
   post: PostStruct
   onSubmit?: (amount: string|null) => void
 }
 
-export default function DonationForm({ post, onSubmit }: DonationFormProps): JSX.Element {
-  
+const DonationForm: FC<DonationFormProps> = ({ post, onSubmit }: DonationFormProps): JSX.Element => {
   const { address } = useAccount();
   const { data: balance } = useBalance({ address });
   
@@ -51,9 +51,9 @@ export default function DonationForm({ post, onSubmit }: DonationFormProps): JSX
     <Form onSubmit={handleSubmit}>
       <div className="flex flex-row justify-between gap-4">
         <Input onChange={handleChange}
-               type="text"
+               type={InputType.text}
                placeholder="Enter amount of ETH you want to donate..." />
-        <Button type="submit"
+        <Button type={ButtonTypes.button}
                 loading={showSpinner}
                 disabled={!isFormEnabled || showSpinner || +(amount || 0) <= 0}>
           DONATE
@@ -62,3 +62,5 @@ export default function DonationForm({ post, onSubmit }: DonationFormProps): JSX
     </Form>
   )
 }
+
+export default DonationForm;

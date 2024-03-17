@@ -1,11 +1,11 @@
-import { JSX, useEffect, useState } from "react";
+import { FC, JSX, useEffect, useState } from "react";
 import { siteLookup, SiteLookupResponse } from "../../utils/meta";
 
 interface PreviewProps {
   uri: string
 }
 
-export default function Preview({ uri }: PreviewProps): JSX.Element|null {
+const Preview: FC<PreviewProps> = ({ uri }): JSX.Element|null => {
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
   const [ data, setData ] = useState<SiteLookupResponse|null>({} as SiteLookupResponse);
   
@@ -75,3 +75,5 @@ export default function Preview({ uri }: PreviewProps): JSX.Element|null {
     </a>
   )
 }
+
+export default Preview;

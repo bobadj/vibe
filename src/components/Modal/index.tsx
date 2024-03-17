@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { JSX, ReactPortal, useEffect, useState, useRef } from "react";
+import { JSX, useEffect, useState, useRef, FC } from "react";
 
 interface ModalProps {
   open: boolean
@@ -7,10 +7,10 @@ interface ModalProps {
   children: JSX.Element|JSX.Element[]
 }
 
-export default function Modal({ open, onClose, children }: ModalProps): ReactPortal|null {
+const Modal: FC<ModalProps> = ({ open, onClose, children }) => {
   const overlayEl = useRef(null);
   const [ isVisible, setIsVisible ] = useState<boolean>(false);
-
+  
   const handleOpen = () => {
     if (overlayEl.current) {
       const overlay: Element = overlayEl.current;
@@ -22,7 +22,7 @@ export default function Modal({ open, onClose, children }: ModalProps): ReactPor
       document.body.classList.add('overflow-hidden');
     }
   };
-
+  
   useEffect(() => {
     let interval: any;
     setIsVisible(open);
@@ -31,7 +31,7 @@ export default function Modal({ open, onClose, children }: ModalProps): ReactPor
     }
     return () => clearInterval(interval);
   }, [open]);
-
+  
   useEffect(() => {
     let interval: any;
     if (isVisible) {
@@ -46,9 +46,9 @@ export default function Modal({ open, onClose, children }: ModalProps): ReactPor
     setIsVisible(false);
     if (onClose) onClose();
   }
-
+  
   if (!isVisible) return null;
-
+  
   return createPortal(
     <div className={`fixed inset-0 flex z-50 justify-center items-center transition-colors duration-300`}
          ref={overlayEl}
@@ -61,3 +61,4 @@ export default function Modal({ open, onClose, children }: ModalProps): ReactPor
     document.body
   )
 }
+export default Modal;

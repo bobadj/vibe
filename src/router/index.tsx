@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import { ConnectWallet, Feed, Profile } from "../../pages";
-import PageLayout from "../../layout/PageLayout";
+import { ConnectWallet, Feed, Profile } from "../pages";
+import PageLayout from "../layout/PageLayout";
 
 export const FEED_PATH: string = '/';
 export const PROFILE_PAGE: string = '/feed/:address'

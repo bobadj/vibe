@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Config, useClient } from "wagmi";
 import { clientToProvider } from "../utils";
-import { contractAddresses } from "../utils/config";
+import { contractAddresses } from "../config";
 import { VibeAbi, VibeAbi__factory } from "../../abis/types";
 
 export default function useVibeContract(chainId: number): VibeAbi|null {

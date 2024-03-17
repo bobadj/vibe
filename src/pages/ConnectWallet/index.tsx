@@ -1,13 +1,15 @@
-import { JSX, useEffect } from "react";
+import { FC, JSX, useEffect } from "react";
 import { Button } from "../../components";
-import { supportedWallets, wagmiConfig } from "../../utils/config";
-import { FEED_PATH } from "../../utils/router";
+import { supportedWallets, wagmiConfig } from "../../config";
+import { FEED_PATH } from "../../router";
 import { connect } from '@wagmi/core';
 import { useAccount } from "wagmi";
 import { useNavigate } from "react-router-dom";
+import { ButtonClassTypes } from "../../types/enum";
+
 import logo from './../../assets/logo_white.svg';
 
-export default function ConnectWallet(): JSX.Element {
+const ConnectWallet: FC = (): JSX.Element => {
   const { address, chainId } = useAccount();
   const navigate = useNavigate();
   
@@ -31,7 +33,7 @@ export default function ConnectWallet(): JSX.Element {
                 return (
                   <Button key={i}
                           className="gap-4 !w-full"
-                          classType="transparent"
+                          classType={ButtonClassTypes.transparent}
                           onClick={() => connect(wagmiConfig, { connector: connector })}>
                     <>
                       <img src={`/src/assets/wallets/${wallet?.name.toLowerCase()}.svg`} alt={wallet.name} />
@@ -47,3 +49,5 @@ export default function ConnectWallet(): JSX.Element {
     </div>
   )
 }
+
+export default ConnectWallet;

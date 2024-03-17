@@ -1,34 +1,32 @@
-import { JSX, MouseEventHandler } from "react";
+import { FC, JSX, MouseEventHandler } from "react";
+import { ButtonClassTypes, ButtonTypes } from "./../../types/enum.ts";
 import Loader from "../Loader";
+import classNames from "classnames";
 
 interface ButtonProps {
   children: string|JSX.Element,
   className?: string,
-  classType?: 'primary'|'secondary'|'transparent',
+  classType?: ButtonClassTypes,
   disabled?: boolean,
   loading?: boolean
   onClick?: MouseEventHandler,
-  type?: "submit"|"reset"|"button"
+  type?: ButtonTypes
 }
-export default function Button({ children, className, classType = 'primary', disabled = false, loading = false, onClick, type = 'button' }: ButtonProps) {
-  const getButtonStyles = (): string => {
-    switch (classType) {
-      case 'transparent':
-        return 'shadow bg-card border-[2px] border-gray text-black';
-      case 'secondary':
-        return 'bg-white shadow-buttonSecondary text-black';
-      default:
-        return "bg-blue shadow-buttonPrimary text-white";
-    }
-  }
-  
+
+const Button: FC<ButtonProps> = ({ children, className, classType = ButtonClassTypes.primary, disabled = false, loading = false, onClick, type = ButtonTypes.button }) => {
   return (
-    <button className={`${getButtonStyles()} ${disabled && 'opacity-70 cursor-not-allowed'} flex flex-row items-center font-medium leading-6 rounded-2xl px-[70px] py-[13px] text-xl w-max ${className || ''}`}
+    <button className={classNames("flex flex-row items-center font-medium leading-6 rounded-2xl px-[70px] py-[13px] text-xl w-max", className, {
+      "bg-blue shadow-buttonPrimary text-white": classType === ButtonClassTypes.primary,
+      "bg-white shadow-buttonSecondary text-black": classType === ButtonClassTypes.secondary,
+      "shadow bg-card border-[2px] border-gray text-black": classType === ButtonClassTypes.transparent,
+      "opacity-60 cursor-not-allowed": disabled
+    })}
             disabled={disabled}
             type={type}
             onClick={onClick}>
-      <Loader.Spinner visible={loading} />
+      <Loader visible={loading} spinner />
       {children}
     </button>
   )
 }
+export default Button;

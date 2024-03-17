@@ -1,11 +1,9 @@
 import { providers } from "ethers";
-import { wagmiConfig } from "./config";
+import { wagmiConfig } from "../config";
 import { getConnectorClient } from '@wagmi/core'
 
-import type { CallbackFunction } from "./types";
+import type { CallbackFunction } from "../types";
 import type { Account, Chain, Client, Transport } from "viem";
-
-export const ZERO_ADDRESS: string = '0x0000000000000000000000000000000000000000';
 
 export const debounce = (callback: CallbackFunction, wait: number = 300) => {
   let timeoutId: any;

@@ -1,4 +1,4 @@
-import { ChangeEvent, JSX, useMemo } from "react";
+import { ChangeEvent, FC, JSX, useMemo } from "react";
 import { debounce } from "../../utils";
 
 interface TextareaProps {
@@ -8,7 +8,7 @@ interface TextareaProps {
   disabled?: boolean
 }
 
-export default function Textarea({ placeholder, value, onChange, disabled }: TextareaProps): JSX.Element {
+const Textarea: FC<TextareaProps> = ({ placeholder, value, onChange, disabled }): JSX.Element => {
   const handleChange = useMemo(() => debounce((ev: ChangeEvent) => {
     const target: HTMLTextAreaElement = ev.target as HTMLTextAreaElement;
     if (onChange) onChange(target.value)
@@ -22,3 +22,5 @@ export default function Textarea({ placeholder, value, onChange, disabled }: Tex
               placeholder={placeholder} />
   )
 }
+
+export default Textarea;
