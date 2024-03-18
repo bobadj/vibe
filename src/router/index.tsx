@@ -1,9 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import { ConnectWallet, Feed, Profile } from "../pages";
+import { ConnectWallet, Feed } from "../pages";
 import PageLayout from "../layout/PageLayout";
 
 export const FEED_PATH: string = '/';
-export const PROFILE_PAGE: string = '/feed/:address'
 export const CONNECT_WALLET_PATH: string = '/wallet';
 
 export const router = () => {
@@ -15,10 +14,6 @@ export const router = () => {
         {
           path: FEED_PATH,
           element: <Feed />
-        },
-        {
-          path: PROFILE_PAGE,
-          element: <Profile />
         }
       ]
     },

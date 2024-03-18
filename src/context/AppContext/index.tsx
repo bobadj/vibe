@@ -18,7 +18,7 @@ interface AppContextValue {
   sponsoredPosts: number[]
   isLoading: boolean
   clearPosts: () => void
-  fetchPosts: (limit?: number) => Promise<void>
+  fetchPosts: (limit?: number, cleanup?: boolean) => Promise<void>
   estimateFeeForNewPost: (value: string) => Promise<string|number>
   estimateSponsorshipFee: (post: PostStruct, donationAmount: number) => Promise<string|number>
   submitPost: (content: string) => Promise<void>
@@ -38,7 +38,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   const contract: VibeAbi|null = useVibeContract(chainId || defaultChainId);
   
   const [ posts, setPosts ] = useState<PostStruct[]>([]);
-  const [ sponsoredPosts, setSponsoredPosts ] = useState<Array<number>>([]);
+  const [ sponsoredPosts, setSponsoredPosts ] = useState<number[]>([]);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
 
   useEffect(() => {
@@ -56,10 +56,11 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
 
   const clearPosts = () => setPosts([]);
   
-  const fetchPosts = async (loadLimit: number = 5): Promise<void> => {
+  const fetchPosts = async (loadLimit: number = 5, cleanup?: boolean): Promise<void> => {
     if (contract && !isLoading) {
+      if (cleanup) clearPosts();
       const latestPostId: number = await fetchLastPostId() + 1;
-      let loadStartAt: number = (latestPostId - posts.length) - loadLimit;
+      let loadStartAt: number = (latestPostId - (cleanup ? 0 : posts.length)) - loadLimit;
       if (loadStartAt < 0) {
         loadLimit = +latestPostId - posts.length;
         loadStartAt = 0;
@@ -67,14 +68,14 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
 
       if (posts.length < +latestPostId) {
         setIsLoading(true);
-        const fetchedPosts = await contract.fetchPostsRanged(loadStartAt, loadLimit);
+        const fetchedPosts: ISocialNetwork.PostStruct[] = await contract.fetchPostsRanged(loadStartAt, loadLimit);
         const modifiedPosts: PostStruct[] = Array.from(fetchedPosts)
           .reverse()
           .map((post: ISocialNetwork.PostStruct, i: number) => (
             {...post, id: (loadStartAt + loadLimit) - (i+1) }
           ));
-        
-        setPosts([...posts, ...modifiedPosts]);
+
+        setPosts(cleanup ? modifiedPosts : [...posts, ...modifiedPosts]);
         // lets delay loading a bit
         setTimeout(() => setIsLoading(false), 50);
       }
@@ -97,9 +98,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
     const transaction = await connectedContract?.createPost(content);
     if (transaction) {
       await transaction.wait(1);
-      const latestPostId = await fetchLastPostId();
-      const post = await contract?.getPost(latestPostId);
-      if (post) setPosts([{...post, id: latestPostId}, ...posts]);
+      await fetchPosts(5, true);
     }
   };
 
@@ -142,8 +141,8 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
   };
 
   const searchPostsByAuthor = async (author: string): Promise<void> => {
-    clearPosts();
     if (author.length > 0) {
+      clearPosts();
       setIsLoading(true);
 
       const events: PostCreatedEvent[] = await contract?.queryFilter(
