@@ -1,5 +1,6 @@
 import { FC, JSX, useEffect, useState } from "react";
 import makeBlockie from 'ethereum-blockies-base64';
+import classNames from "classnames";
 
 interface AvatarProps {
   small?: boolean,
@@ -7,7 +8,6 @@ interface AvatarProps {
 }
 
 const Avatar: FC<AvatarProps> = ({ address, small = false }): JSX.Element => {
-  const avatarClass: string = small ? 'w-[30px] h-auto' : 'min-w-[60px] h-[60px]';
   const [ avatar, setAvatar ] = useState<string|undefined>();
   
   useEffect(() => {
@@ -16,7 +16,10 @@ const Avatar: FC<AvatarProps> = ({ address, small = false }): JSX.Element => {
   
   return (
     <div className="avatar">
-      <img src={avatar} alt="avatar" className={`rounded-sm ${avatarClass}`} />
+      <img src={avatar} alt="avatar" className={classNames('rounded-sm', {
+        'min-w-[60px] h-[60px]': !small,
+        'w-[30px] h-auto': small
+      })} />
     </div>
   )
 }
