@@ -1,8 +1,9 @@
 import { FC, JSX } from "react";
 import { Input } from "../../components";
 
-import searchIcon from "./assets/search.svg";
 import { InputType } from "../../types/enum";
+
+import searchIcon from "./assets/search.svg";
 
 interface SearchProps {
   value?: string,

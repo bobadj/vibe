@@ -1,4 +1,4 @@
-import { ethers} from "ethers";
+import { ethers } from "ethers";
 import { FC, FormEvent, JSX, useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { useAppContext } from "../../hooks";
