@@ -136,7 +136,7 @@ export default function AppProvider({ children }: AppProviderProps): JSX.Element
         contract?.filters.PostSponsored(null, null, address)
       ) || [];
     }
-    const postIds: Array<number> = events?.map( (ev: PostSponsoredEvent) => BigNumber.from(ev.args[0] || '0').toNumber());
+    const postIds: number[] = events?.map( (ev: PostSponsoredEvent) => BigNumber.from(ev.args[0] || '0').toNumber());
     setSponsoredPosts(postIds);
   };
 
