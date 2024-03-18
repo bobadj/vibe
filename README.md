@@ -15,7 +15,7 @@ git clone git@github.com:bobadj/vibe.git
 cd vibe/
 pnpm install
 ```
-* Visit https://cors-anywhere.herokuapp.com and "Request temporary access.."
+* Visit https://cors-anywhere.herokuapp.com/corsdemo and "Request temporary access.."
 * start development server
 ```bash
 pnpm run dev 
