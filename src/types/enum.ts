@@ -20,3 +20,8 @@ export enum InputType {
   number = "number",
   search = "search"
 }
+
+export enum SiteLookupResponseType {
+  website = "website",
+  image = "image"
+}

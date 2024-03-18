@@ -1,5 +1,7 @@
 import { FC, JSX, useEffect, useState } from "react";
-import { siteLookup, SiteLookupResponse } from "../../utils/meta";
+import { SiteLookupResponseType } from "../../types/enum";
+import { SiteLookupResponse } from "../../types/interface";
+import { siteLookupService } from "../../services/siteLookup.service";
 
 interface PreviewProps {
   uri: string
@@ -12,7 +14,7 @@ const Preview: FC<PreviewProps> = ({ uri }): JSX.Element|null => {
   useEffect(() => {
     const fetchMetadata = async () => {
       setIsLoading(true);
-      const siteLookupResponse = await siteLookup(uri);
+      const siteLookupResponse = await siteLookupService.lookup(uri);
       setData(siteLookupResponse);
       setIsLoading(false);
     }
@@ -34,7 +36,7 @@ const Preview: FC<PreviewProps> = ({ uri }): JSX.Element|null => {
   
   if (data === null) return null;
   
-  if (data.type === 'image' && data.images && data.images.length > 0) {
+  if (data.type === SiteLookupResponseType.image && data.images && data.images.length > 0) {
     return (
       <a href={uri} target="_blank" className="my-2 shadow rounded-lg">
         <img className="h-auto rounded-lg" src={data.images[0] as string} alt={data.title as string} />

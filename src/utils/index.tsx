@@ -20,7 +20,7 @@ export const formatAddress = (account: string|null|undefined) => {
   return acc.substring(0, 6) + '...' + acc.substring(acc.length - 4)
 };
 
-export function clientToProvider(client: Client<Transport, Chain>): providers.JsonRpcProvider {
+export const clientToProvider = (client: Client<Transport, Chain>): providers.JsonRpcProvider => {
   const { chain, transport } = client;
   const network = {
     chainId: chain.id,
@@ -30,7 +30,7 @@ export function clientToProvider(client: Client<Transport, Chain>): providers.Js
   return new providers.JsonRpcProvider(transport.url, network);
 }
 
-export function clientToSigner(client: Client<Transport, Chain, Account>) {
+export const clientToSigner = (client: Client<Transport, Chain, Account>) => {
     const { account, chain, transport } = client
     const network = {
         chainId: chain.id,
@@ -41,7 +41,7 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
     return provider.getSigner(account.address);
 }
 
-export async function getEthersSigner() {
+export const getEthersSigner = async () => {
     const client = await getConnectorClient(wagmiConfig)
     return clientToSigner(client)
 }
@@ -60,7 +60,7 @@ export const formatTime = (timestamp: number, useFullFormat: boolean = true) => 
   return Math.floor(seconds) + "s";
 }
 
-export async function isImage(url: string): Promise<boolean> {
+export const isImage = async (url: string): Promise<boolean> => {
   const isImage = /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url);
   if (!isImage) {
     const img = new Image();

@@ -1,5 +1,5 @@
 import { FC, JSX, MouseEventHandler } from "react";
-import { ButtonClassTypes, ButtonTypes } from "./../../types/enum.ts";
+import { ButtonClassTypes, ButtonTypes } from "./../../types/enum";
 import Loader from "../Loader";
 import classNames from "classnames";
 

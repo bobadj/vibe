@@ -58,7 +58,7 @@ const DonationForm: FC<DonationFormProps> = ({ post, onSubmit }): JSX.Element =>
           <Input onChange={handleChange}
                  type={InputType.text}
                  placeholder="Enter amount of ETH you want to donate..." />
-          <Button type={ButtonTypes.button}
+          <Button type={ButtonTypes.submit}
                   loading={showSpinner}
                   disabled={!isFormEnabled || showSpinner || +(amount || 0) <= 0}>
             DONATE
