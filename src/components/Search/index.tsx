@@ -9,7 +9,7 @@ interface SearchProps {
   onChange?: (value: string) => void
 }
 
-const Search: FC<SearchProps> = ({ value, onChange }: SearchProps): JSX.Element => {
+const Search: FC<SearchProps> = ({ value, onChange }): JSX.Element => {
   const handleChange = (value: string) => {
     if (onChange) onChange(value);
   }

@@ -9,7 +9,7 @@ interface PostListProps {
   title?: string
 }
 
-const PostList: FC<PostListProps> = ({ title }: PostListProps): JSX.Element => {
+const PostList: FC<PostListProps> = ({ title }): JSX.Element => {
   const { posts, isLoading } = useAppContext();
   
   return (

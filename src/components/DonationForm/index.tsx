@@ -12,7 +12,7 @@ interface DonationFormProps {
   onSubmit?: (amount: string|null) => void
 }
 
-const DonationForm: FC<DonationFormProps> = ({ post, onSubmit }: DonationFormProps): JSX.Element => {
+const DonationForm: FC<DonationFormProps> = ({ post, onSubmit }): JSX.Element => {
   const { address } = useAccount();
   const { data: balance } = useBalance({ address });
   

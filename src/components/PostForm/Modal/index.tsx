@@ -10,7 +10,7 @@ interface ModalProps {
   onSubmit?: () => void
 }
 
-const Modal: FC<ModalProps> = ({ onSubmit }: ModalProps): JSX.Element|null => {
+const Modal: FC<ModalProps> = ({ onSubmit }): JSX.Element|null => {
   const { isConnected } = useAccount();
   const { showPostForm, setShowPostForm } = useOutletContext<OutletContextType>();
   

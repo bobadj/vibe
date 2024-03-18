@@ -7,8 +7,8 @@ import Card from "../Card";
 import Modal from "../Modal";
 import DonationForm from "../DonationForm";
 
-import {PostStruct} from "../../types";
-import {PostActionType} from "../../types/enum";
+import { PostStruct } from "../../types";
+import { PostActionType } from "../../types/enum";
 
 import Header from "./Header";
 import Footer from "./Footer";
@@ -18,7 +18,7 @@ interface PostProps {
   post: PostStruct,
 }
 
-const Post: FC<PostProps> = ({ post }: PostProps): JSX.Element => {
+const Post: FC<PostProps> = ({ post }): JSX.Element => {
   const { id, text, timestamp, owner } = post;
   
   const { sponsoredPosts } = useAppContext();

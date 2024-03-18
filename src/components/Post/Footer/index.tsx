@@ -1,5 +1,4 @@
-import {JSX} from "react";
-
+import { FC, JSX } from "react";
 import { PostActionType } from "../../../types/enum";
 
 import coins from "./assets/coins.svg";
@@ -10,7 +9,7 @@ interface FooterProps {
   disabled?: boolean
 }
 
-export default function Footer({ handleAction, disabled = false }: FooterProps): JSX.Element {
+const Footer: FC<FooterProps> = ({ handleAction, disabled = false }): JSX.Element => {
   
   const handleClick = (action: PostActionType) => {
     if (!disabled && handleAction) handleAction(action);
@@ -33,3 +32,5 @@ export default function Footer({ handleAction, disabled = false }: FooterProps):
     </div>
   )
 }
+
+export default Footer;

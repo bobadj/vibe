@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from "react";
+import { FC, JSX, useEffect, useState } from "react";
 import { isValidURL } from "../../../utils";
 import Preview from "../../Preview";
 
@@ -6,7 +6,7 @@ interface ContentProps {
   content: string
 }
 
-export default function Content({ content }: ContentProps): JSX.Element {
+const Content: FC<ContentProps> = ({ content }): JSX.Element => {
   const [ previewSource, setPreviewSource ] = useState<string|undefined|null>(null);
 
   useEffect(() => {
@@ -33,3 +33,5 @@ export default function Content({ content }: ContentProps): JSX.Element {
     </div>
   )
 }
+
+export default Content;
